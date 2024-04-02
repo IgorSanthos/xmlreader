@@ -28,7 +28,7 @@ try:
     cFOP = root.find(element_CFOP)
     nNF = root.find(element_nNF)
     
-                                #   variavel da mudança do valor da TAG
+                                #   variavel da mudança do valor da TA
                                     #element_change = '5949'
 
                                 #   Recebimento da TAG original para a Mudança
