@@ -27,7 +27,7 @@ try:
 #   Criando variavel para a tag que quero encontrar
     cFOP = root.find(element_CFOP)
     nNF = root.find(element_nNF)
-
+    
                                 #   variavel da mudança do valor da TAG
                                     #element_change = '5949'
 
