@@ -278,13 +278,13 @@ class ReadXML:
                 iCMS_vICMS = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:vICMS", nsNfe))
                 iCMS_vICMSDeson = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:vICMSDeson", nsNfe))
                 iCMS_motDesICMS = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:motDesICMS", nsNfe))
-                iCMS_pMVAST = " "
-                iCMS_pRedBCST = " "
-                iCMS_vBCST = " "
-                iCMS_pICMSST = " "
-                iCMS_vICMSST = " "
-                iCMS_pBCOp = " "
-                iCMS_UFST = " "
+                iCMS_pMVAST = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:pMVAST", nsNfe))
+                iCMS_pRedBCST = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:pRedBCST", nsNfe))
+                iCMS_vBCST = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:vBCST", nsNfe))
+                iCMS_pICMSST = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:pICMSST", nsNfe))
+                iCMS_vICMSST = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:vICMSST", nsNfe))
+                iCMS_pBCOp = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:pBCOp", nsNfe))
+                iCMS_UFST = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:UFST", nsNfe))
                 iCMS_pFCP = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:pFCP", nsNfe))
                 iCMS_vFCP = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:vFCP", nsNfe))
                 iCMS_vBCFCP = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:vBCFCP", nsNfe))
@@ -320,7 +320,7 @@ class ReadXML:
                 iCMS_qBCMonoRet = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:qBCMonoRet", nsNfe))
                 iCMS_adRemICMSRet = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:adRemICMSRet", nsNfe))
                 iCMS_vICMSMonoRet = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:vICMSMonoRet", nsNfe))
-                vazio = " "
+                vazio = "  "
         # IPI   =========================================================================================================             
                 iPI_clEnq = self.check_none(item.find("./ns:imposto/ns:IPI/ns:clEnq", nsNfe))
                 iPI_CNPJProd = self.check_none(item.find("./ns:imposto/ns:IPI/ns:CNPJProd", nsNfe))
@@ -447,7 +447,7 @@ class ReadXML:
                         "ICMS_pRedAdRem": iCMS_pRedAdRem, "ICMS_motRedAdRem": iCMS_motRedAdRem, "ICMS_motDesICMSST": iCMS_motDesICMSST, "ICMS_pFCPDif": iCMS_pFCPDif, 
                         "ICMS_vFCPDif": iCMS_vFCPDif, "ICMS_vFCPEfet": iCMS_vFCPEfet, "ICMS_vICMSMonoOp": iCMS_vICMSMonoOp, "ICMS_vICMSMonoDif": iCMS_vICMSMonoDif, 
                         "ICMS_qBCMonoDif": iCMS_qBCMonoDif, "ICMS_adRemICMSDif": iCMS_adRemICMSDif, "ICMS_vICMSSubstituto": iCMS_vICMSSubstituto, 
-                        "ICMS_qBCMonoRet": iCMS_qBCMonoRet, "ICMS_adRemICMSRet": iCMS_adRemICMSRet, "ICMS_vICMSMonoRet": iCMS_vICMSMonoRet, "vazio": vazio, 
+                        "ICMS_qBCMonoRet": iCMS_qBCMonoRet, "ICMS_adRemICMSRet": iCMS_adRemICMSRet, "ICMS_vICMSMonoRet": iCMS_vICMSMonoRet, "cBenef": vazio, 
                         "IPI_clEnq": iPI_clEnq, "IPI_CNPJProd": iPI_CNPJProd, "IPI_cSelo": iPI_cSelo, "IPI_qSelo": iPI_qSelo, "IPI_cEnq": iPI_cEnq, 
                         "IPITRIB_CST": iPITRIB_CST, "IPITRIB_vBC": iPITRIB_vBC, "IPITRIB_pIPI": iPITRIB_pIPI, "IPITRIB_qUnid": iPITRIB_qUnid, 
                         "IPITRIB_vUnid": iPITRIB_vUnid, "IPITRIB_vIPI": iPITRIB_vIPI, "IPINT_CST": iPINT_CST, "II_vBC": iI_vBC, "II_vDespAdu": iI_vDespAdu, 
@@ -564,7 +564,7 @@ class ReadXML:
                 dUP_dVenc = self.check_none(dup.find("./ns:dVenc", nsNfe)) 
                 dUP_vDup = self.check_none(dup.find(".ns:vDup", nsNfe))
         
-                dupDados = {"Arquivo": chave, "Versão_XML":versao_XML,"FAT_nFat":fAT_nFat, "FAT_vOrig":fAT_vOrig, "FAT_vDesc":fAT_vDesc, "FAT_vLiq":fAT_vLiq,
+                dupDados = {"Arquivo": chave, "idnNF": idnNF,"FAT_nFat":fAT_nFat, "FAT_vOrig":fAT_vOrig, "FAT_vDesc":fAT_vDesc, "FAT_vLiq":fAT_vLiq,
                             "DUP_nDup":dUP_nDup, "DUP_dVenc":dUP_dVenc, "DUP_vDup":dUP_vDup}
 
                 dados["Cobrança"].append(dupDados)

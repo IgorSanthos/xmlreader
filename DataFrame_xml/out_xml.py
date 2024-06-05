@@ -88,29 +88,90 @@ for excel_file in excel_files:
                 "uCom":"prod", "qCom":"prod", "vUnCom":"prod", "vProd":"prod", "cEANTrib":"prod", "uTrib":"prod",
                 "qTrib":"prod", "vUnTrib":"prod", "indTot":"prod"} 
                    
+
     # 1 - Impostos
-    tag_impostos = {**sub_prod, "vTotTrib":"imposto", "orig":"imposto", "CSOSN":"imposto", "pCredSN":"imposto", "vCredICMSSN":"imposto","ICMS_CST":"imposto",
-                    "ICMS_modBC":"imposto","ICMS_vBC":"imposto","ICMS_pICMS":"imposto","ICMS_vICMS":"imposto",
+    tag_impostos = {**sub_prod, "orig":"imposto", "CSOSN":"imposto","ICMS_CST":"imposto","ICMS_modBC": "imposto",
+                    "ICMS_vBC": "imposto","ICMS_modBCST": "imposto","ICMS_pRedBC": "imposto","ICMS_pICMS": "imposto",
+                     "ICMS_vICMSOp": "imposto","ICMS_pDif": "imposto","ICMS_vICMSDif": "imposto","ICMS_vICMS": "imposto",
+                     "ICMS_vICMSDeson": "imposto","ICMS_motDesICMS": "imposto","ICMS_pMVAST": "imposto","ICMS_pRedBCST": "imposto",
+                     "ICMS_vBCST": "imposto","ICMS_pICMSST": "imposto","ICMS_vICMSST": "imposto","ICMS_pBCOp": "imposto",
+                     "ICMS_UFST": "imposto","ICMS_pFCP": "imposto","ICMS_vFCP": "imposto","ICMS_vBCFCP": "imposto",
+                     "ICMS_pFCPST": "imposto","ICMS_vFCPST": "imposto","ICMS_vBCFCPST": "imposto","ICMS_pFCPSTRet": "imposto",
+                     "ICMS_vFCPSTRet": "imposto","ICMS_vBCFCPSTRet": "imposto","ICMS_pRedBCEfet": "imposto","ICMS_vBCEfet": "imposto",
+                     "ICMS_pICMSEfet": "imposto","ICMS_vICMSEfet": "imposto","ICMS_pST": "imposto","ICMS_qBCMono": "imposto",
+                     "ICMS_adRemICMS": "imposto","ICMS_vICMSMono": "imposto","ICMS_qBCMonoReten": "imposto","ICMS_adRemICMSReten": "imposto",
+                     "ICMS_vICMSMonoReten": "imposto","ICMS_pRedAdRem": "imposto","ICMS_motRedAdRem": "imposto",
+                     "ICMS_motDesICMSST": "imposto","ICMS_pFCPDif": "imposto","ICMS_vFCPDif": "imposto","ICMS_vFCPEfet": "imposto",
+                     "ICMS_vICMSMonoOp": "imposto","ICMS_vICMSMonoDif": "imposto","ICMS_qBCMonoDif": "imposto","ICMS_adRemICMSDif": "imposto",
+                     "ICMS_vICMSSubstituto": "imposto","ICMS_qBCMonoRet": "imposto","ICMS_adRemICMSRet": "imposto","ICMS_vICMSMonoRet": "imposto",
+
                     # PIS E COFINS
-                    "PIS_CST":"imposto","PIS_vBC":"imposto","PIS_pPIS":"imposto","PIS_vPIS":"imposto",
-                    "COFINS_CST":"imposto","COFINS_vBC":"imposto","COFINS_pCOFINS":"imposto","COFINS_vCOFINS":"imposto"}
+                    "PIS_CST":"imposto","PIS_vBC":"imposto","PIS_pPIS":"imposto","PIS_vPIS":"imposto","COFINS_CST":"imposto"
+                    ,"COFINS_vBC":"imposto","COFINS_pCOFINS":"imposto","COFINS_vCOFINS":"imposto"
+                    
+                    
+                    #IPI
+                    ,"IPI_clEnq":"imposto","IPI_CNPJProd": "imposto","IPI_cSelo": "imposto","IPI_qSelo": "imposto",
+                    "IPI_cEnq": "imposto","IPITRIB_CST": "imposto","IPITRIB_vBC": "imposto","IPITRIB_pIPI": "imposto",
+                    "IPITRIB_qUnid": "imposto","IPITRIB_vUnid": "imposto","IPITRIB_vIPI": "imposto","IPINT_CST": "imposto",
+
+                    }
     
     # 2 - Dentro de ICMS/PISCOFINS/IPI
-    tagICMS = {"orig":"ICMS", "CSOSN":"ICMS", "pCredSN":"ICMS", "vCredICMSSN":"ICMS","ICMS_CST":"ICMS",
-                "ICMS_modBC":"ICMS","ICMS_vBC":"ICMS","ICMS_pICMS":"ICMS","ICMS_vICMS":"ICMS",
+    tagICMS = {"orig": "ICMS","CSOSN":"ICMS", "ICMS_CST": "ICMS","ICMS_modBC": "ICMS", "ICMS_vBC": "ICMS","ICMS_modBCST": "ICMS", "ICMS_pRedBC": "ICMS",
+                "ICMS_pICMS": "ICMS","ICMS_vICMSOp": "ICMS","ICMS_pDif": "ICMS","ICMS_vICMSDif": "ICMS",
+                "ICMS_vICMS": "ICMS","ICMS_vICMSDeson": "ICMS","ICMS_motDesICMS": "ICMS","ICMS_pMVAST": "ICMS",
+                "ICMS_pRedBCST": "ICMS","ICMS_vBCST": "ICMS","ICMS_pICMSST": "ICMS","ICMS_vICMSST": "ICMS","ICMS_pBCOp": "ICMS",
+                "ICMS_UFST": "ICMS","ICMS_pFCP": "ICMS","ICMS_vFCP": "ICMS","ICMS_vBCFCP": "ICMS","ICMS_pFCPST": "ICMS",
+                "ICMS_vFCPST": "ICMS","ICMS_vBCFCPST": "ICMS","ICMS_pFCPSTRet": "ICMS","ICMS_vFCPSTRet": "ICMS",
+                "ICMS_vBCFCPSTRet": "ICMS","ICMS_pRedBCEfet": "ICMS","ICMS_vBCEfet": "ICMS","ICMS_pICMSEfet": "ICMS",
+                "ICMS_vICMSEfet": "ICMS","ICMS_pST": "ICMS","ICMS_qBCMono": "ICMS","ICMS_adRemICMS": "ICMS",
+                "ICMS_vICMSMono": "ICMS","ICMS_qBCMonoReten": "ICMS","ICMS_adRemICMSReten": "ICMS","ICMS_vICMSMonoReten": "ICMS",
+                "ICMS_pRedAdRem": "ICMS","ICMS_motRedAdRem": "ICMS","ICMS_motDesICMSST": "ICMS","ICMS_pFCPDif": "ICMS",
+                "ICMS_vFCPDif": "ICMS","ICMS_vFCPEfet": "ICMS","ICMS_vICMSMonoOp": "ICMS","ICMS_vICMSMonoDif": "ICMS",
+                "ICMS_qBCMonoDif": "ICMS","ICMS_adRemICMSDif": "ICMS","ICMS_vICMSSubstituto": "ICMS","ICMS_qBCMonoRet": "ICMS",
+                "ICMS_adRemICMSRet": "ICMS","ICMS_vICMSMonoRet": "ICMS",
+
                 # PIS E COFINS
                 "PIS_CST":"PIS","PIS_vBC":"PIS","PIS_pPIS":"PIS","PIS_vPIS":"PIS",
-                "COFINS_CST":"COFINS","COFINS_vBC":"COFINS","COFINS_pCOFINS":"COFINS","COFINS_vCOFINS":"COFINS"}
+                "COFINS_CST":"COFINS","COFINS_vBC":"COFINS","COFINS_pCOFINS":"COFINS","COFINS_vCOFINS":"COFINS"                    
+                
+                #IPI
+                ,"IPI_clEnq": "IPI","IPI_CNPJProd": "IPI","IPI_cSelo": "IPI","IPI_qSelo": "IPI","IPI_cEnq": "IPI",
+                "IPITRIB_CST": "IPI","IPITRIB_vBC": "IPI","IPITRIB_pIPI": "IPI","IPITRIB_qUnid": "IPI","IPITRIB_vUnid": "IPI",
+                "IPITRIB_vIPI": "IPI","IPINT_CST": "IPI",
+
+                }
     
     # 3 - TIPO DE ICMS
     tipodeICMS = "ICMS10"
     tipoPIS = "PISAliq"
-    tipoCOFINS = "COFINAliq"
-    tagICMSTipo = {"orig": tipodeICMS, "CSOSN":tipodeICMS, "pCredSN":tipodeICMS, "vCredICMSSN":tipodeICMS,"ICMS_CST":tipodeICMS,
-                   "ICMS_modBC":tipodeICMS,"ICMS_vBC":tipodeICMS,"ICMS_pICMS":tipodeICMS,"ICMS_vICMS":tipodeICMS,
+    tipoCOFINS = "COFINSAliq"
+    tagICMSTipo = {"orig": tipodeICMS,"CSOSN":tipodeICMS, "ICMS_CST": tipodeICMS,"ICMS_modBC": tipodeICMS,"ICMS_vBC": tipodeICMS,"ICMS_modBCST": tipodeICMS,
+                   "ICMS_pRedBC": tipodeICMS,"ICMS_pICMS": tipodeICMS,"ICMS_vICMSOp": tipodeICMS,
+                    "ICMS_pDif": tipodeICMS,"ICMS_vICMSDif": tipodeICMS,"ICMS_vICMS": tipodeICMS,"ICMS_vICMSDeson": tipodeICMS,
+                    "ICMS_motDesICMS": tipodeICMS,"ICMS_pMVAST": tipodeICMS,"ICMS_pRedBCST": tipodeICMS,
+                    "ICMS_vBCST": tipodeICMS,"ICMS_pICMSST": tipodeICMS,"ICMS_vICMSST": tipodeICMS,"ICMS_pBCOp": tipodeICMS,
+                    "ICMS_UFST": tipodeICMS,"ICMS_pFCP": tipodeICMS,"ICMS_vFCP": tipodeICMS,"ICMS_vBCFCP": tipodeICMS,
+                    "ICMS_pFCPST": tipodeICMS,"ICMS_vFCPST": tipodeICMS,"ICMS_vBCFCPST": tipodeICMS,"ICMS_pFCPSTRet": tipodeICMS,
+                    "ICMS_vFCPSTRet": tipodeICMS,"ICMS_vBCFCPSTRet": tipodeICMS,"ICMS_pRedBCEfet": tipodeICMS,
+                    "ICMS_vBCEfet": tipodeICMS,"ICMS_pICMSEfet": tipodeICMS,"ICMS_vICMSEfet": tipodeICMS,"ICMS_pST": tipodeICMS,
+                    "ICMS_qBCMono": tipodeICMS,"ICMS_adRemICMS": tipodeICMS,"ICMS_vICMSMono": tipodeICMS,"ICMS_qBCMonoReten": tipodeICMS,
+                    "ICMS_adRemICMSReten": tipodeICMS,"ICMS_vICMSMonoReten": tipodeICMS,"ICMS_pRedAdRem": tipodeICMS,
+                    "ICMS_motRedAdRem": tipodeICMS,"ICMS_motDesICMSST": tipodeICMS,"ICMS_pFCPDif": tipodeICMS,"ICMS_vFCPDif": tipodeICMS,
+                    "ICMS_vFCPEfet": tipodeICMS,"ICMS_vICMSMonoOp": tipodeICMS,"ICMS_vICMSMonoDif": tipodeICMS,"ICMS_qBCMonoDif": tipodeICMS,
+                    "ICMS_adRemICMSDif": tipodeICMS,"ICMS_vICMSSubstituto": tipodeICMS,"ICMS_qBCMonoRet": tipodeICMS,
+                    "ICMS_adRemICMSRet": tipodeICMS,"ICMS_vICMSMonoRet": tipodeICMS,
+
                    # PIS E COFINS
                    "PIS_CST":tipoPIS,"PIS_vBC":tipoPIS,"PIS_pPIS":tipoPIS,"PIS_vPIS":tipoPIS,
-                   "COFINS_CST":tipoCOFINS,"COFINS_vBC":tipoCOFINS,"COFINS_pCOFINS":tipoCOFINS,"COFINS_vCOFINS":tipoCOFINS}
+                   "COFINS_CST":tipoCOFINS,"COFINS_vBC":tipoCOFINS,"COFINS_pCOFINS":tipoCOFINS,"COFINS_vCOFINS":tipoCOFINS
+                                       
+                    #IPI
+                    ,"IPI_clEnq": "IPITrib","IPI_CNPJProd": "IPITrib","IPI_cSelo": "IPITrib","IPI_qSelo": "IPITrib",
+                    "IPITRIB_CST": "IPITrib","IPITRIB_vBC": "IPITrib","IPITRIB_pIPI": "IPITrib",
+                    "IPITRIB_qUnid": "IPITrib","IPITRIB_vUnid": "IPITrib","IPITRIB_vIPI": "IPITrib","IPINT_CST": "IPINT",
+                    }
     
 # Aba Sub do Total
     tag_ICMSTot = {"vBC": "ICMSTot","vICMS": "ICMSTot","vICMSDeson": "ICMSTot","vFCPUFDest": "ICMSTot", 
@@ -123,10 +184,14 @@ for excel_file in excel_files:
     tag_transporta = {"CNPJ":"transporta", "xNome":"transporta", "IE":"transporta", "xEnder":"transporta", "xMun":"transporta", "UF":"transporta",
                       "esp":"vol", "pesoL":"vol", "pesoB":"vol"}
     
+#Aba Sub do cobranca
+    tag_cobra = {"FAT_nFat":"fat","FAT_vOrig":"fat","FAT_vDesc":"fat","FAT_vLiq":"fat","DUP_nDup":"dup","DUP_dVenc":"dup","DUP_vDup":"dup"} 
+    
 # Aba Sub do Pagamento
-    tag_detPag = {"tPag":"detPag","vPag":"detPag"}
+    tag_detPag = {"indPag":"detPag", "tPag":"detPag","xPag":"detPag","vPag":"detPag","vPag":"detPag","vTroco":"detPag",
+                  "CARD_tpIntegra":"CARD", "CARD_CNPJ":"CARD", "CARD_tBand":"CARD", "CARD_cAut":"CARD"}
 
-# Aba Sub do Pagamento
+# Aba Sub do 
     tag_Keyinfo = {"DigestValue":"SignedInfo","X509Certificate":"KeyInfo"}
     tag_X509Data = {"X509Certificate":"X509Data"}
 
@@ -149,6 +214,7 @@ for excel_file in excel_files:
         df_det_chave = df_det[df_det['Arquivo'] == chave]
         df_total_chave = df_total[df_total['Arquivo'] == chave]
         df_transp_chave = df_transp[df_transp['Arquivo'] == chave]
+        df_cobranca_chave = df_cobranca[df_cobranca['Arquivo'] == chave]
         df_paga_chave = df_pagamento[df_pagamento['Arquivo'] == chave]
         df_info_chave = df_info[df_info['Arquivo'] == chave]
         df_assinatura_chave = df_assinatura[df_assinatura['Arquivo'] == chave]
@@ -171,17 +237,18 @@ for excel_file in excel_files:
 # =============================  DATAFRAME
         ignore_columns = ["Arquivo", "idnNF", "Tipo_ICMS", "Tipo_PIS", "Tipo_COFINS", "NumItem"]
         # Adicionando dados da planilha aba por aba
-        dataframe_to_xml (df_idNFE_chave, taginfNfe, 'ide', ignore_columns = ignore_columns)
-        dataframe_to_xml (df_emit_chave, taginfNfe, 'emit', sub_element_mapping = sub_emit, ignore_columns = ignore_columns)
-        dataframe_to_xml (df_dest_chave, taginfNfe, 'dest', sub_element_mapping = sub_dest, ignore_columns = ignore_columns)
-        dataframe_to_xml (df_det_chave, taginfNfe, 'det', sub_element_mapping = tag_impostos, sub_sub_element_mapping = tagICMS,
-                          sub_sub_sub_element_mapping = tagICMSTipo, ignore_columns = ignore_columns)  
-        dataframe_to_xml (df_total_chave,taginfNfe, 'total', sub_element_mapping = tag_ICMSTot, ignore_columns = ignore_columns)
-        dataframe_to_xml (df_transp_chave, taginfNfe, 'transp', sub_element_mapping = tag_transporta, ignore_columns = ignore_columns)
+        dataframe_to_xml (df_idNFE_chave, taginfNfe, 'ide', ignore_columns=ignore_columns)
+        dataframe_to_xml (df_emit_chave, taginfNfe, 'emit', sub_element_mapping = sub_emit, ignore_columns=ignore_columns)
+        dataframe_to_xml (df_dest_chave, taginfNfe, 'dest', sub_element_mapping = sub_dest, ignore_columns=ignore_columns)
+        dataframe_to_xml (df_det_chave, taginfNfe, 'det', sub_element_mapping = tag_impostos, sub_sub_element_mapping=tagICMS,
+                          sub_sub_sub_element_mapping = tagICMSTipo, ignore_columns=ignore_columns)  
+        dataframe_to_xml (df_total_chave,taginfNfe, 'total', sub_element_mapping = tag_ICMSTot, ignore_columns=ignore_columns)
+        dataframe_to_xml (df_transp_chave, taginfNfe, 'transp', sub_element_mapping = tag_transporta, ignore_columns=ignore_columns)
+        dataframe_to_xml (df_cobranca_chave, taginfNfe, 'cobr', sub_element_mapping=tag_cobra, ignore_columns=ignore_columns)
         dataframe_to_xml (df_paga_chave, taginfNfe, 'pag', sub_element_mapping = tag_detPag, ignore_columns=ignore_columns)
         dataframe_to_xml (df_info_chave, taginfNfe, 'infAdic', ignore_columns=ignore_columns)
         dataframe_to_xml (df_assinatura_chave, tagNFe,'Signature', sub_element_mapping = tag_Keyinfo,sub_sub_element_mapping=tag_X509Data, ignore_columns=ignore_columns)
-        dataframe_to_xml(df_protocolo_chave, root, 'protNFe', sub_element_mapping=tag_infProt, ignore_columns=ignore_columns)
+        dataframe_to_xml (df_protocolo_chave, root, 'protNFe', sub_element_mapping=tag_infProt, ignore_columns=ignore_columns)
 
 #Nova tag SignedInfo
 # Buscar uma tag ja existente
@@ -215,7 +282,6 @@ for excel_file in excel_files:
         findprotNFe = root.find('.//protNFe')
         findprotNFe.set("xmlns",'http://www.portalfiscal.inf.br/nfe')
         findprotNFe.set("versao", "4.00")
-
         
         for i, finditem in enumerate(root.findall('.//det'), start=1):
             finditem.set("nItem", str(i))
