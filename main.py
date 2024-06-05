@@ -1,7 +1,7 @@
 import os
 import xml.etree.ElementTree as Et
 import pandas as pd
-# main
+
 class ReadXML:
     def __init__(self, directory) -> None:
         if not os.path.isdir(directory):
