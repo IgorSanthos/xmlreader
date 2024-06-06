@@ -3,6 +3,9 @@ import xml.etree.ElementTree as ET
 import glob
 import os
 
+# Palavra a ser removida dos nomes das tags
+
+
 # Função para converter DataFrame para XML e adicionar ao parent_element existente
 def dataframe_to_xml(df, parent_element, row_element_name, sub_element_mapping=None, sub_sub_element_mapping=None, sub_sub_sub_element_mapping=None, ignore_columns=None):
     for _, row in df.iterrows():
@@ -41,7 +44,6 @@ def dataframe_to_xml(df, parent_element, row_element_name, sub_element_mapping=N
             else:
                 cell = ET.SubElement(row_element, col_name)
                 cell.text = str(row[col_name])
-
 
 # Diretório contendo os arquivos Excel
 excel_files = glob.glob(r'C:\Users\Igor\Desktop\XML EM UM DICIONARIO\xmlreader\DataFrame_xml/*.xlsx')
@@ -104,17 +106,13 @@ for excel_file in excel_files:
                      "ICMS_motDesICMSST": "imposto","ICMS_pFCPDif": "imposto","ICMS_vFCPDif": "imposto","ICMS_vFCPEfet": "imposto",
                      "ICMS_vICMSMonoOp": "imposto","ICMS_vICMSMonoDif": "imposto","ICMS_qBCMonoDif": "imposto","ICMS_adRemICMSDif": "imposto",
                      "ICMS_vICMSSubstituto": "imposto","ICMS_qBCMonoRet": "imposto","ICMS_adRemICMSRet": "imposto","ICMS_vICMSMonoRet": "imposto",
-
                     # PIS E COFINS
                     "PIS_CST":"imposto","PIS_vBC":"imposto","PIS_pPIS":"imposto","PIS_vPIS":"imposto","COFINS_CST":"imposto"
-                    ,"COFINS_vBC":"imposto","COFINS_pCOFINS":"imposto","COFINS_vCOFINS":"imposto"
-                    
-                    
+                    ,"COFINS_vBC":"imposto","COFINS_pCOFINS":"imposto","COFINS_vCOFINS":"imposto",
                     #IPI
-                    ,"IPI_clEnq":"imposto","IPI_CNPJProd": "imposto","IPI_cSelo": "imposto","IPI_qSelo": "imposto",
+                    "IPI_clEnq":"imposto","IPI_CNPJProd": "imposto","IPI_cSelo": "imposto","IPI_qSelo": "imposto",
                     "IPI_cEnq": "imposto","IPITRIB_CST": "imposto","IPITRIB_vBC": "imposto","IPITRIB_pIPI": "imposto",
-                    "IPITRIB_qUnid": "imposto","IPITRIB_vUnid": "imposto","IPITRIB_vIPI": "imposto","IPINT_CST": "imposto",
-
+                    "IPITRIB_qUnid": "imposto","IPITRIB_vUnid": "imposto","IPITRIB_vIPI": "imposto","IPINT_CST": "imposto"
                     }
     
     # 2 - Dentro de ICMS/PISCOFINS/IPI
@@ -131,16 +129,13 @@ for excel_file in excel_files:
                 "ICMS_vFCPDif": "ICMS","ICMS_vFCPEfet": "ICMS","ICMS_vICMSMonoOp": "ICMS","ICMS_vICMSMonoDif": "ICMS",
                 "ICMS_qBCMonoDif": "ICMS","ICMS_adRemICMSDif": "ICMS","ICMS_vICMSSubstituto": "ICMS","ICMS_qBCMonoRet": "ICMS",
                 "ICMS_adRemICMSRet": "ICMS","ICMS_vICMSMonoRet": "ICMS",
-
                 # PIS E COFINS
                 "PIS_CST":"PIS","PIS_vBC":"PIS","PIS_pPIS":"PIS","PIS_vPIS":"PIS",
-                "COFINS_CST":"COFINS","COFINS_vBC":"COFINS","COFINS_pCOFINS":"COFINS","COFINS_vCOFINS":"COFINS"                    
-                
+                "COFINS_CST":"COFINS","COFINS_vBC":"COFINS","COFINS_pCOFINS":"COFINS","COFINS_vCOFINS":"COFINS",
                 #IPI
-                ,"IPI_clEnq": "IPI","IPI_CNPJProd": "IPI","IPI_cSelo": "IPI","IPI_qSelo": "IPI","IPI_cEnq": "IPI",
+                "IPI_clEnq": "IPI","IPI_CNPJProd": "IPI","IPI_cSelo": "IPI","IPI_qSelo": "IPI","IPI_cEnq": "IPI",
                 "IPITRIB_CST": "IPI","IPITRIB_vBC": "IPI","IPITRIB_pIPI": "IPI","IPITRIB_qUnid": "IPI","IPITRIB_vUnid": "IPI",
-                "IPITRIB_vIPI": "IPI","IPINT_CST": "IPI",
-
+                "IPITRIB_vIPI": "IPI","IPINT_CST": "IPI"
                 }
     
     # 3 - TIPO DE ICMS
@@ -162,11 +157,9 @@ for excel_file in excel_files:
                     "ICMS_vFCPEfet": tipodeICMS,"ICMS_vICMSMonoOp": tipodeICMS,"ICMS_vICMSMonoDif": tipodeICMS,"ICMS_qBCMonoDif": tipodeICMS,
                     "ICMS_adRemICMSDif": tipodeICMS,"ICMS_vICMSSubstituto": tipodeICMS,"ICMS_qBCMonoRet": tipodeICMS,
                     "ICMS_adRemICMSRet": tipodeICMS,"ICMS_vICMSMonoRet": tipodeICMS,
-
                    # PIS E COFINS
                    "PIS_CST":tipoPIS,"PIS_vBC":tipoPIS,"PIS_pPIS":tipoPIS,"PIS_vPIS":tipoPIS,
-                   "COFINS_CST":tipoCOFINS,"COFINS_vBC":tipoCOFINS,"COFINS_pCOFINS":tipoCOFINS,"COFINS_vCOFINS":tipoCOFINS
-                                       
+                   "COFINS_CST":tipoCOFINS,"COFINS_vBC":tipoCOFINS,"COFINS_pCOFINS":tipoCOFINS,"COFINS_vCOFINS":tipoCOFINS                                       
                     #IPI
                     ,"IPI_clEnq": "IPITrib","IPI_CNPJProd": "IPITrib","IPI_cSelo": "IPITrib","IPI_qSelo": "IPITrib",
                     "IPITRIB_CST": "IPITrib","IPITRIB_vBC": "IPITrib","IPITRIB_pIPI": "IPITrib",
@@ -182,7 +175,7 @@ for excel_file in excel_files:
     
 #Aba Sub do Transporte
     tag_transporta = {"CNPJ":"transporta", "xNome":"transporta", "IE":"transporta", "xEnder":"transporta", "xMun":"transporta", "UF":"transporta",
-                      "esp":"vol", "pesoL":"vol", "pesoB":"vol"}
+                      "esp":"vol", "pesoL":"vol", "pesoB":"vol", "qVol":"vol"}
     
 # Aba Sub do Pagamento
     tag_detPag = {"indPag":"detPag", "tPag":"detPag","xPag":"detPag","vPag":"detPag","vPag":"detPag","vTroco":"detPag",
@@ -306,7 +299,15 @@ for excel_file in excel_files:
         for i, finditem in enumerate(root.findall('.//det'), start=1):
             finditem.set("nItem", str(i))
 
-
+#========================================== TIRANDO NOME DAS TAGS ===============================================================================
+        def remove_words_from_tag_names(element):
+            if '_' in element.tag:
+                element.tag = element.tag.split('_', 1)[1]
+            # Fazer o mesmo para todos os filhos do elemento
+            for child in list(element):
+                remove_words_from_tag_names(child)
+        # Remover as palavras dos nomes das tags de todo o XML
+        remove_words_from_tag_names(root)
 #=========================================================================================================================
         # Converter o elemento root para string XML
         xml_data = ET.tostring(root, encoding='unicode')
