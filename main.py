@@ -320,7 +320,7 @@ class ReadXML:
                 iCMS_qBCMonoRet = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:qBCMonoRet", nsNfe))
                 iCMS_adRemICMSRet = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:adRemICMSRet", nsNfe))
                 iCMS_vICMSMonoRet = self.check_none (item.find(f"./ns:imposto/ns:ICMS/ns:{tipo_ICMS}/ns:vICMSMonoRet", nsNfe))
-                vazio = "  "
+                vazio = ""
         # IPI   =========================================================================================================             
                 iPI_clEnq = self.check_none(item.find("./ns:imposto/ns:IPI/ns:clEnq", nsNfe))
                 iPI_CNPJProd = self.check_none(item.find("./ns:imposto/ns:IPI/ns:CNPJProd", nsNfe))
@@ -559,15 +559,22 @@ class ReadXML:
         fAT_vOrig = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:cobr/ns:fat/ns:vOrig",nsNfe))
         fAT_vDesc = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:cobr/ns:fat/ns:vDesc",nsNfe))
         fAT_vLiq = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:cobr/ns:fat/ns:vLiq",nsNfe))
+
+        first_dup = True
         for dup in root.findall("./ns:NFe/ns:infNFe/ns:cobr/ns:dup", nsNfe):
                 dUP_nDup = self.check_none(dup.find("./ns:nDup", nsNfe))
                 dUP_dVenc = self.check_none(dup.find("./ns:dVenc", nsNfe)) 
-                dUP_vDup = self.check_none(dup.find(".ns:vDup", nsNfe))
-        
-                dupDados = {"Arquivo": chave, "idnNF": idnNF,"FAT_nFat":fAT_nFat, "FAT_vOrig":fAT_vOrig, "FAT_vDesc":fAT_vDesc, "FAT_vLiq":fAT_vLiq,
-                            "DUP_nDup":dUP_nDup, "DUP_dVenc":dUP_dVenc, "DUP_vDup":dUP_vDup}
-
+                dUP_vDup = self.check_none(dup.find("./ns:vDup", nsNfe))
+                
+                if first_dup:
+                        dupDados = {"Arquivo": chave, "idnNF": idnNF,"FAT_nFat":fAT_nFat, "FAT_vOrig":fAT_vOrig, "FAT_vDesc":fAT_vDesc,
+                                    "FAT_vLiq":fAT_vLiq, "DUP_nDup":dUP_nDup, "DUP_dVenc":dUP_dVenc, "DUP_vDup":dUP_vDup}
+                        first_dup = False
+                else:
+                        dupDados = {"Arquivo": chave, "idnNF": idnNF,"FAT_nFat":"", "FAT_vOrig":"", "FAT_vDesc":"",
+                                    "FAT_vLiq":"", "DUP_nDup":dUP_nDup, "DUP_dVenc":dUP_dVenc, "DUP_vDup":dUP_vDup}
                 dados["Cobrança"].append(dupDados)
+        
 #============================================================================================ PAGAMENTO ===================================================================
         # Extraindo informações da seção 'pag-detPag'
 
@@ -674,8 +681,8 @@ class ReadXML:
         
         dados["Compras"].append({"Arquivo": chave,"idnNF": idnNF, "xNEmp":xNEmp, "compras_xPed":compras_xPed, "xCont":xCont})
 
-        dados["Resp. Tecnico"].append({"Arquivo": chave,"idnNF": idnNF, tec_CNPJ:"tec_CNPJ", tec_xContato:"tec_xContato", tec_email:"tec_email", 
-                                       tec_fone:"tec_fone", tec_idCSRT:"tec_idCSRT", tec_hashCSRT:"tec_hashCSRT"})
+        dados["Resp. Tecnico"].append({"Arquivo": chave,"idnNF": idnNF, "CNPJ":tec_CNPJ, "xContato":tec_xContato, "email":tec_email, 
+                                       "fone":tec_fone, "idCSRT":tec_idCSRT, "hashCSRT":tec_hashCSRT})
 
         dados["Assinatura"].append({"Arquivo": chave,"idnNF": idnNF, "DigestValue": digestValue, "SignatureValue": signatureValue, "X509Certificate":x509Certificate})
 
@@ -690,7 +697,7 @@ class ReadXML:
 #===============================================================================
 try:
     if __name__ == "__main__":
-        xml = ReadXML(r'C:\Users\Igor\Desktop\XML EM UM DICIONARIO\nfe-teste')
+        xml = ReadXML(r'C:\Users\Igor\Desktop\XML EM UM DICIONARIO\xmlreader\nfe-teste')
         all_xml_files = xml.all_files()
 
         all_data = {}
@@ -703,7 +710,7 @@ try:
                     all_data[key] = value
 
 
-        with pd.ExcelWriter(r'C:\Users\Igor\Desktop\XML EM UM DICIONARIO\DataFrame_xml\relatorio_notas_fiscais.xlsx') as writer:
+        with pd.ExcelWriter(r'C:\Users\Igor\Desktop\XML EM UM DICIONARIO\xmlreader\DataFrame_xml\relatorio_notas_fiscais.xlsx') as writer:
             for sheet_name, data in all_data.items():
                 df = pd.DataFrame(data)
                 df.to_excel(writer, sheet_name=sheet_name, index=False)

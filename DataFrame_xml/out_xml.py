@@ -44,7 +44,7 @@ def dataframe_to_xml(df, parent_element, row_element_name, sub_element_mapping=N
 
 
 # Diretório contendo os arquivos Excel
-excel_files = glob.glob(r'C:\Users\Igor\Desktop\XML EM UM DICIONARIO\DataFrame_xml/*.xlsx')
+excel_files = glob.glob(r'C:\Users\Igor\Desktop\XML EM UM DICIONARIO\xmlreader\DataFrame_xml/*.xlsx')
 
 # Verificar se há arquivos Excel na pasta especificada
 if not excel_files:
@@ -52,7 +52,7 @@ if not excel_files:
     exit()
 
 # Criar uma pasta para salvar os arquivos XML
-output_directory = r'C:\Users\Igor\Desktop\XML EM UM DICIONARIO\DataFrame_xml\XML_Output'
+output_directory = r'C:\Users\Igor\Desktop\XML EM UM DICIONARIO\xmlreader\DataFrame_xml\XML_Output'
 os.makedirs(output_directory, exist_ok=True)
 
 # Ler os dados das planilhas
@@ -66,8 +66,8 @@ for excel_file in excel_files:
     df_cobranca = pd.read_excel(excel_file, sheet_name="Cobrança", dtype=str)
     df_pagamento = pd.read_excel(excel_file, sheet_name="Pagamento", dtype=str)
     df_info = pd.read_excel(excel_file, sheet_name="Inf. Adicional", dtype=str)
-    #df_compras = pd.read_excel(excel_file, sheet_name="Compras", dtype=str)
-    #df_respTec = pd.read_excel(excel_file, sheet_name="Resp. Tecnico", dtype=str)
+    df_compras = pd.read_excel(excel_file, sheet_name="Compras", dtype=str)
+    df_respTec = pd.read_excel(excel_file, sheet_name="Resp. Tecnico", dtype=str)
     df_assinatura = pd.read_excel(excel_file, sheet_name="Assinatura", dtype=str)
     df_protocolo = pd.read_excel(excel_file, sheet_name="Protocolo", dtype=str)
 
@@ -84,9 +84,9 @@ for excel_file in excel_files:
                 "cPais": "enderDest", "xPais": "enderDest", "fone": "enderDest"}
                 
 # Aba Sub dos Itens
-    sub_prod = {"NumItem": "prod","cProd":"prod", "cEAN":"prod", "xProd":"prod", "NCM":"prod", "CEST":"prod", "cBenef":"prod", "CFOP":"prod",
+    sub_prod = {"NumItem": "prod","cProd":"prod", "cEAN":"prod", "xProd":"prod", "NCM":"prod", "CEST":"prod", "CFOP":"prod",
                 "uCom":"prod", "qCom":"prod", "vUnCom":"prod", "vProd":"prod", "cEANTrib":"prod", "uTrib":"prod",
-                "qTrib":"prod", "vUnTrib":"prod", "indTot":"prod"} 
+                "qTrib":"prod", "vUnTrib":"prod", "indTot":"prod","xPed":"prod"} 
                    
 
     # 1 - Impostos
@@ -184,9 +184,6 @@ for excel_file in excel_files:
     tag_transporta = {"CNPJ":"transporta", "xNome":"transporta", "IE":"transporta", "xEnder":"transporta", "xMun":"transporta", "UF":"transporta",
                       "esp":"vol", "pesoL":"vol", "pesoB":"vol"}
     
-#Aba Sub do cobranca
-    tag_cobra = {"FAT_nFat":"fat","FAT_vOrig":"fat","FAT_vDesc":"fat","FAT_vLiq":"fat","DUP_nDup":"dup","DUP_dVenc":"dup","DUP_vDup":"dup"} 
-    
 # Aba Sub do Pagamento
     tag_detPag = {"indPag":"detPag", "tPag":"detPag","xPag":"detPag","vPag":"detPag","vPag":"detPag","vTroco":"detPag",
                   "CARD_tpIntegra":"CARD", "CARD_CNPJ":"CARD", "CARD_tBand":"CARD", "CARD_cAut":"CARD"}
@@ -217,6 +214,9 @@ for excel_file in excel_files:
         df_cobranca_chave = df_cobranca[df_cobranca['Arquivo'] == chave]
         df_paga_chave = df_pagamento[df_pagamento['Arquivo'] == chave]
         df_info_chave = df_info[df_info['Arquivo'] == chave]
+        #compra
+        df_compras_chave = df_compras[df_compras['Arquivo'] == chave]
+        df_respTec_chave = df_respTec[df_respTec['Arquivo'] == chave]
         df_assinatura_chave = df_assinatura[df_assinatura['Arquivo'] == chave]
         df_protocolo_chave = df_protocolo[df_protocolo['Arquivo'] == chave]
 
@@ -232,6 +232,7 @@ for excel_file in excel_files:
         taginfNfe.set("versao", "4.00")
         taginfNfe.set("id", f"NFe{chave}")
     # Nova tag protNFe
+        
 
 
 # =============================  DATAFRAME
@@ -241,12 +242,20 @@ for excel_file in excel_files:
         dataframe_to_xml (df_emit_chave, taginfNfe, 'emit', sub_element_mapping = sub_emit, ignore_columns=ignore_columns)
         dataframe_to_xml (df_dest_chave, taginfNfe, 'dest', sub_element_mapping = sub_dest, ignore_columns=ignore_columns)
         dataframe_to_xml (df_det_chave, taginfNfe, 'det', sub_element_mapping = tag_impostos, sub_sub_element_mapping=tagICMS,
-                          sub_sub_sub_element_mapping = tagICMSTipo, ignore_columns=ignore_columns)  
+                          sub_sub_sub_element_mapping = tagICMSTipo, ignore_columns=ignore_columns)
         dataframe_to_xml (df_total_chave,taginfNfe, 'total', sub_element_mapping = tag_ICMSTot, ignore_columns=ignore_columns)
         dataframe_to_xml (df_transp_chave, taginfNfe, 'transp', sub_element_mapping = tag_transporta, ignore_columns=ignore_columns)
-        dataframe_to_xml (df_cobranca_chave, taginfNfe, 'cobr', sub_element_mapping=tag_cobra, ignore_columns=ignore_columns)
+
+        #   CRIACAO DE TAG COBR
+        tagCobr = ET.SubElement(taginfNfe, 'cobr')
+        #   CRIACAO DE TAG  FAT
+        tagfaturamento = ET.SubElement(tagCobr, 'fat')
+        
+        dataframe_to_xml (df_cobranca_chave, tagCobr, 'dup', ignore_columns=ignore_columns)
         dataframe_to_xml (df_paga_chave, taginfNfe, 'pag', sub_element_mapping = tag_detPag, ignore_columns=ignore_columns)
         dataframe_to_xml (df_info_chave, taginfNfe, 'infAdic', ignore_columns=ignore_columns)
+        dataframe_to_xml (df_compras_chave, taginfNfe, 'compra', ignore_columns=ignore_columns)
+        dataframe_to_xml (df_respTec_chave, taginfNfe, 'infRespTec', ignore_columns=ignore_columns)
         dataframe_to_xml (df_assinatura_chave, tagNFe,'Signature', sub_element_mapping = tag_Keyinfo,sub_sub_element_mapping=tag_X509Data, ignore_columns=ignore_columns)
         dataframe_to_xml (df_protocolo_chave, root, 'protNFe', sub_element_mapping=tag_infProt, ignore_columns=ignore_columns)
 
@@ -282,7 +291,18 @@ for excel_file in excel_files:
         findprotNFe = root.find('.//protNFe')
         findprotNFe.set("xmlns",'http://www.portalfiscal.inf.br/nfe')
         findprotNFe.set("versao", "4.00")
-        
+        # Adicionarndo TAG cBenef
+        for taginfNfe in root.findall('.//det'):
+            findtagBenef = taginfNfe.find('.//prod')
+            tagBenef = ET.SubElement(findtagBenef, 'cBenef')
+        # movendo TAG FAT
+        fatFind = ['FAT_nFat', 'FAT_vDesc', 'FAT_vOrig', 'FAT_vLiq']
+        for fat in root.findall('.//dup'):
+            for tag in fatFind:
+                FAT_nFat = fat.find(tag)
+                if FAT_nFat is not None:
+                    fat.remove(FAT_nFat)
+                    tagfaturamento.append(FAT_nFat) # excluir         
         for i, finditem in enumerate(root.findall('.//det'), start=1):
             finditem.set("nItem", str(i))
 
