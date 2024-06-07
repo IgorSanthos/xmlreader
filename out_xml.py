@@ -88,11 +88,11 @@ for excel_file in excel_files:
 # Aba Sub dos Itens
     sub_prod = {"NumItem": "prod","cProd":"prod", "cEAN":"prod", "xProd":"prod", "NCM":"prod", "CEST":"prod", "CFOP":"prod",
                 "uCom":"prod", "qCom":"prod", "vUnCom":"prod", "vProd":"prod", "cEANTrib":"prod", "uTrib":"prod",
-                "qTrib":"prod", "vUnTrib":"prod", "indTot":"prod","xPed":"prod"} 
+                "qTrib":"prod", "vUnTrib":"prod", "indTot":"prod","xPed":"prod","nFCI":"prod"} 
                    
 
     # 1 - Impostos
-    tag_impostos = {**sub_prod, "orig":"imposto", "CSOSN":"imposto","ICMS_CST":"imposto","ICMS_modBC": "imposto",
+    tag_impostos = {**sub_prod, "Tipo_ICMS":"imposto", "orig":"imposto", "CSOSN":"imposto","ICMS_CST":"imposto","ICMS_modBC": "imposto",
                     "ICMS_vBC": "imposto","ICMS_modBCST": "imposto","ICMS_pRedBC": "imposto","ICMS_pICMS": "imposto",
                      "ICMS_vICMSOp": "imposto","ICMS_pDif": "imposto","ICMS_vICMSDif": "imposto","ICMS_vICMS": "imposto",
                      "ICMS_vICMSDeson": "imposto","ICMS_motDesICMS": "imposto","ICMS_pMVAST": "imposto","ICMS_pRedBCST": "imposto",
@@ -116,8 +116,8 @@ for excel_file in excel_files:
                     }
     
     # 2 - Dentro de ICMS/PISCOFINS/IPI
-    tagICMS = {"orig": "ICMS","CSOSN":"ICMS", "ICMS_CST": "ICMS","ICMS_modBC": "ICMS", "ICMS_vBC": "ICMS","ICMS_modBCST": "ICMS", "ICMS_pRedBC": "ICMS",
-                "ICMS_pICMS": "ICMS","ICMS_vICMSOp": "ICMS","ICMS_pDif": "ICMS","ICMS_vICMSDif": "ICMS",
+    tagICMS = { "Tipo_ICMS":"ICMS","orig": "ICMS","CSOSN":"ICMS", "ICMS_CST": "ICMS","ICMS_modBC": "ICMS", "ICMS_vBC": "ICMS","ICMS_modBCST": "ICMS",
+               "ICMS_pRedBC": "ICMS", "ICMS_pICMS": "ICMS","ICMS_vICMSOp": "ICMS","ICMS_pDif": "ICMS","ICMS_vICMSDif": "ICMS",
                 "ICMS_vICMS": "ICMS","ICMS_vICMSDeson": "ICMS","ICMS_motDesICMS": "ICMS","ICMS_pMVAST": "ICMS",
                 "ICMS_pRedBCST": "ICMS","ICMS_vBCST": "ICMS","ICMS_pICMSST": "ICMS","ICMS_vICMSST": "ICMS","ICMS_pBCOp": "ICMS",
                 "ICMS_UFST": "ICMS","ICMS_pFCP": "ICMS","ICMS_vFCP": "ICMS","ICMS_vBCFCP": "ICMS","ICMS_pFCPST": "ICMS",
@@ -174,8 +174,8 @@ for excel_file in excel_files:
                    "vPIS": "ICMSTot","vCOFINS": "ICMSTot","vOutro": "ICMSTot","vNF": "ICMSTot","vTotTrib": "ICMSTot"}
     
 #Aba Sub do Transporte
-    tag_transporta = {"CNPJ":"transporta", "xNome":"transporta", "IE":"transporta", "xEnder":"transporta", "xMun":"transporta", "UF":"transporta",
-                      "esp":"vol", "pesoL":"vol", "pesoB":"vol", "qVol":"vol"}
+    tag_transporta = {"CNPJ":"transporta", "xNome":"transporta", "IE":"transporta", "xEnder":"transporta", "xMun":"transporta", "UF":"transporta"}#,
+                      #"VOL_qVol":"vol","VOL_esp":"vol","VOL_marca":"vol","VOL_nVol":"vol","VOL_pesoL":"vol","VOL_pesoB":"vol","VOL_nLacre":"vol"}
     
 # Aba Sub do Pagamento
     tag_detPag = {"indPag":"detPag", "tPag":"detPag","xPag":"detPag","vPag":"detPag","vPag":"detPag","vTroco":"detPag",
@@ -189,8 +189,6 @@ for excel_file in excel_files:
     tag_infProt = { "tpAmb":"infProt", "verAplic":"infProt", "chNFe":"infProt",
                     "dhRecbto":"infProt", "nProt":"infProt", "digVal":"infProt", 
                     "cStat":"infProt", "xMotivo":"infProt",}
-
-
 
 #=========================== CHAVES
 # Identificar valores únicos na coluna "Arquivo"
@@ -222,14 +220,12 @@ for excel_file in excel_files:
         tagNFe.set("xmlns", "http://www.portalfiscal.inf.br/nfe")
     # Nova tag infNFe
         taginfNfe = ET.SubElement(tagNFe, 'infNFe')
+        taginfNfe.set("Id", f"NFe{chave}")
         taginfNfe.set("versao", "4.00")
-        taginfNfe.set("id", f"NFe{chave}")
     # Nova tag protNFe
-        
-
 
 # =============================  DATAFRAME
-        ignore_columns = ["Arquivo", "idnNF", "Tipo_ICMS", "Tipo_PIS", "Tipo_COFINS", "NumItem"]
+        ignore_columns = ["Arquivo", "idnNF", "Tipo_PIS", "Tipo_COFINS", "NumItem"]
         # Adicionando dados da planilha aba por aba
         dataframe_to_xml (df_idNFE_chave, taginfNfe, 'ide', ignore_columns=ignore_columns)
         dataframe_to_xml (df_emit_chave, taginfNfe, 'emit', sub_element_mapping = sub_emit, ignore_columns=ignore_columns)
@@ -249,7 +245,7 @@ for excel_file in excel_files:
         dataframe_to_xml (df_info_chave, taginfNfe, 'infAdic', ignore_columns=ignore_columns)
         dataframe_to_xml (df_compras_chave, taginfNfe, 'compra', ignore_columns=ignore_columns)
         dataframe_to_xml (df_respTec_chave, taginfNfe, 'infRespTec', ignore_columns=ignore_columns)
-        dataframe_to_xml (df_assinatura_chave, tagNFe,'Signature', sub_element_mapping = tag_Keyinfo,sub_sub_element_mapping=tag_X509Data, ignore_columns=ignore_columns)
+        dataframe_to_xml (df_assinatura_chave, tagNFe,'Signature', sub_element_mapping = tag_Keyinfo,sub_sub_element_mapping=tag_X509Data,      ignore_columns=ignore_columns)
         dataframe_to_xml (df_protocolo_chave, root, 'protNFe', sub_element_mapping=tag_infProt, ignore_columns=ignore_columns)
 
 #Nova tag SignedInfo
@@ -299,21 +295,33 @@ for excel_file in excel_files:
         for i, finditem in enumerate(root.findall('.//det'), start=1):
             finditem.set("nItem", str(i))
 
-#========================================== TIRANDO NOME DAS TAGS ===============================================================================
-        def remove_words_from_tag_names(element):
-            if '_' in element.tag:
-                element.tag = element.tag.split('_', 1)[1]
-            # Fazer o mesmo para todos os filhos do elemento
-            for child in list(element):
-                remove_words_from_tag_names(child)
-        # Remover as palavras dos nomes das tags de todo o XML
-        remove_words_from_tag_names(root)
+    # Percorrer cada elemento <det> do XML e alterar a tag TIPOICMS
+    for det_element in root.findall('.//det'):
+        tipo_icms = det_element.find('.//Tipo_ICMS').text
+        icms10 = det_element.find('.//ICMS/ICMS10')
+        if icms10 is not None:
+            icms10.tag = tipo_icms
+    # Percorrer cada elemento <det> do XML e excluir a tag TIPOICMS
+    for detelement in root.findall('.//det'):
+        icmselement = detelement.find('.//ICMS')
+        tipo_icms_element = icmselement.find('.//Tipo_ICMS')
+        icmselement.remove(tipo_icms_element)        
+     
+#========================================== TIRANDO NOME DAS TAG tipo de icms ===============================================================================
+    def remove_words_from_tag_names(element):
+        if '_' in element.tag:
+            element.tag = element.tag.split('_', 1)[1]
+        # Fazer o mesmo para todos os filhos do elemento
+        for child in list(element):
+            remove_words_from_tag_names(child)
+    # Remover as palavras dos nomes das tags de todo o XML
+    remove_words_from_tag_names(root)
 #=========================================================================================================================
-        # Converter o elemento root para string XML
-        xml_data = ET.tostring(root, encoding='unicode')
+    # Converter o elemento root para string XML
+    xml_data = ET.tostring(root, encoding='unicode')
 
-        # Caminho para o arquivo XML de saída
-        output_xml_file = os.path.join(output_directory, f'NFE_{chave}.xml')
-        with open(output_xml_file, 'w', encoding = 'utf-8') as f:
-            f.write(xml_data)
-        print(f'Arquivo XML para chave {chave} salvo em {output_xml_file}')
+    # Caminho para o arquivo XML de saída
+    output_xml_file = os.path.join(output_directory, f'NFE_{chave}.xml')
+    with open(output_xml_file, 'w', encoding = 'utf-8') as f:
+        f.write(xml_data)
+    print(f'Arquivo XML para chave {chave} salvo em {output_xml_file}')

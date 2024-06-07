@@ -521,7 +521,7 @@ class ReadXML:
 
 
 
-#============================================================================================ TRANSPORTE ===================================================================
+#============================================================================================ TRANSPORTE ha intes tambem ===================================================================
         modFrete = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:modFrete", nsNfe))
         transpcNPJ = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:transporta/ns:CNPJ", nsNfe))
         transpcPF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:transporta/ns:CPF", nsNfe))
