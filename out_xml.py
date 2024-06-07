@@ -7,7 +7,7 @@ import os
 
 
 # Função para converter DataFrame para XML e adicionar ao parent_element existente
-def dataframe_to_xml(df, parent_element, row_element_name, sub_element_mapping=None, sub_sub_element_mapping=None, sub_sub_sub_element_mapping=None, ignore_columns=None):
+def df_to_xml(df, parent_element, row_element_name, tag_first_lvl=None, tag_sec_lvl=None, tag_ter_lvl=None, skip_columns=None):
     for _, row in df.iterrows():
         row_element = ET.SubElement(parent_element, row_element_name)    
         for col_name in df.columns:
@@ -15,23 +15,23 @@ def dataframe_to_xml(df, parent_element, row_element_name, sub_element_mapping=N
             if pd.isna(row[col_name]) or row[col_name] == '' or row[col_name] == ' ':
                 continue
             # Pula a criação da tag se a coluna estiver na lista de colunas a serem ignoradas
-            if ignore_columns and col_name in ignore_columns:
+            if skip_columns and col_name in skip_columns:
                 continue 
 
-            if sub_element_mapping and col_name in sub_element_mapping:
-                sub_element_name = sub_element_mapping[col_name]
+            if tag_first_lvl and col_name in tag_first_lvl:
+                sub_element_name = tag_first_lvl[col_name]
                 sub_element = row_element.find(sub_element_name)
                 if sub_element is None:
                     sub_element = ET.SubElement(row_element, sub_element_name)
                 
-                if sub_sub_element_mapping and col_name in sub_sub_element_mapping:
-                    sub_sub_element_name = sub_sub_element_mapping[col_name]
+                if tag_sec_lvl and col_name in tag_sec_lvl:
+                    sub_sub_element_name = tag_sec_lvl[col_name]
                     sub_sub_element = sub_element.find(sub_sub_element_name)
                     if sub_sub_element is None:
                         sub_sub_element = ET.SubElement(sub_element, sub_sub_element_name)
                     
-                    if sub_sub_sub_element_mapping and col_name in sub_sub_sub_element_mapping:
-                        sub_sub_sub_element_name = sub_sub_sub_element_mapping[col_name]
+                    if tag_ter_lvl and col_name in tag_ter_lvl:
+                        sub_sub_sub_element_name = tag_ter_lvl[col_name]
                         sub_sub_sub_element = sub_sub_element.find(sub_sub_sub_element_name)
                         if sub_sub_sub_element is None:
                             sub_sub_sub_element = ET.SubElement(sub_sub_element, sub_sub_sub_element_name)
@@ -173,9 +173,9 @@ for excel_file in excel_files:
                    "vPIS": "ICMSTot","vCOFINS": "ICMSTot","vOutro": "ICMSTot","vNF": "ICMSTot","vTotTrib": "ICMSTot"}
     
 #Aba Sub do Transporte
-    tag_transporta = {"CNPJ":"transporta", "xNome":"transporta", "IE":"transporta", "xEnder":"transporta", "xMun":"transporta", "UF":"transporta"}#,
-                      #"VOL_qVol":"vol","VOL_esp":"vol","VOL_marca":"vol","VOL_nVol":"vol","VOL_pesoL":"vol","VOL_pesoB":"vol","VOL_nLacre":"vol"}
-    
+    tag_transporta = {"CNPJ":"transporta", "xNome":"transporta", "IE":"transporta", "xEnder":"transporta", "xMun":"transporta", "UF":"transporta"}
+
+
 # Aba Sub do Pagamento
     tag_detPag = {"indPag":"detPag", "tPag":"detPag","xPag":"detPag","vPag":"detPag","vPag":"detPag","vTroco":"detPag",
                   "CARD_tpIntegra":"CARD", "CARD_CNPJ":"CARD", "CARD_tBand":"CARD", "CARD_cAut":"CARD"}
@@ -221,32 +221,46 @@ for excel_file in excel_files:
         taginfNfe = ET.SubElement(tagNFe, 'infNFe')
         taginfNfe.set("Id", f"NFe{chave}")
         taginfNfe.set("versao", "4.00")
-    # Nova tag protNFe
+
 
 # =============================  DATAFRAME
-        ignore_columns = ["Arquivo", "idnNF", "Tipo_PIS", "Tipo_COFINS", "NumItem"]
+        skip_columns = ["Arquivo", "idnNF", "Tipo_PIS", "Tipo_COFINS", "NumItem"]   
         # Adicionando dados da planilha aba por aba
-        dataframe_to_xml (df_idNFE_chave, taginfNfe, 'ide', ignore_columns=ignore_columns)
-        dataframe_to_xml (df_emit_chave, taginfNfe, 'emit', sub_element_mapping = sub_emit, ignore_columns=ignore_columns)
-        dataframe_to_xml (df_dest_chave, taginfNfe, 'dest', sub_element_mapping = sub_dest, ignore_columns=ignore_columns)
-        dataframe_to_xml (df_det_chave, taginfNfe, 'det', sub_element_mapping = tag_impostos, sub_sub_element_mapping=tagICMS,
-                          sub_sub_sub_element_mapping = tagICMSTipo, ignore_columns=ignore_columns)
-        dataframe_to_xml (df_total_chave,taginfNfe, 'total', sub_element_mapping = tag_ICMSTot, ignore_columns=ignore_columns)
-        dataframe_to_xml (df_transp_chave, taginfNfe, 'transp', sub_element_mapping = tag_transporta, ignore_columns=ignore_columns)
+        df_to_xml (df_idNFE_chave, taginfNfe, 'ide', skip_columns=skip_columns)
+        df_to_xml (df_emit_chave, taginfNfe, 'emit', tag_first_lvl = sub_emit, skip_columns=skip_columns)
+        df_to_xml (df_dest_chave, taginfNfe, 'dest', tag_first_lvl = sub_dest, skip_columns=skip_columns)
+        df_to_xml (df_det_chave, taginfNfe, 'det', tag_first_lvl = tag_impostos, tag_sec_lvl=tagICMS, tag_ter_lvl = tagICMSTipo, skip_columns=skip_columns)
+        df_to_xml (df_total_chave,taginfNfe, 'total', tag_first_lvl = tag_ICMSTot, skip_columns=skip_columns)
+        
+        
 
-        #   CRIACAO DE TAG COBR
+        df_to_xml (df_assinatura_chave, tagNFe,'Signature', tag_first_lvl = tag_Keyinfo, tag_sec_lvl = tag_X509Data, skip_columns=skip_columns)
+        df_to_xml (df_protocolo_chave, root, 'protNFe', tag_first_lvl = tag_infProt, skip_columns=skip_columns)
+
+
+    # Nova tag transporte
+        
+        tagCobr = ET.SubElement(taginfNfe, 'transp')
+        transport = ET.SubElement(tagCobr, 'transporta')
+        df_to_xml (df_transp_chave, tagCobr, 'vol',skip_columns=skip_columns)
+        df_to_xml (df_cobranca_chave, tagCobr, 'dup', skip_columns = skip_columns)
+        elements = ['CNPJ', 'xNome', 'IE', 'xEnder', 'xMun', 'UF']
+        # Encontrando e movendo elementos de transporte
+        transpfind = tagCobr.find('.//vol')
+        for elem in elements:
+            found_elem = transpfind.find(f'.//{elem}')
+            transpfind.remove(found_elem)
+            transport.append(found_elem)
+
+        #   CRIACAO DE TAG COBR TAG  FAT
         tagCobr = ET.SubElement(taginfNfe, 'cobr')
-        #   CRIACAO DE TAG  FAT
         tagfaturamento = ET.SubElement(tagCobr, 'fat')
         
-        dataframe_to_xml (df_cobranca_chave, tagCobr, 'dup', ignore_columns=ignore_columns)
-        dataframe_to_xml (df_paga_chave, taginfNfe, 'pag', sub_element_mapping = tag_detPag, ignore_columns=ignore_columns)
-        dataframe_to_xml (df_info_chave, taginfNfe, 'infAdic', ignore_columns=ignore_columns)
-        dataframe_to_xml (df_compras_chave, taginfNfe, 'compra', ignore_columns=ignore_columns)
-        dataframe_to_xml (df_respTec_chave, taginfNfe, 'infRespTec', ignore_columns=ignore_columns)
-        dataframe_to_xml (df_assinatura_chave, tagNFe,'Signature', sub_element_mapping = tag_Keyinfo,sub_sub_element_mapping=tag_X509Data,      ignore_columns=ignore_columns)
-        dataframe_to_xml (df_protocolo_chave, root, 'protNFe', sub_element_mapping=tag_infProt, ignore_columns=ignore_columns)
-
+        df_to_xml (df_paga_chave, taginfNfe, 'pag', tag_first_lvl = tag_detPag, skip_columns=skip_columns)
+        df_to_xml (df_info_chave, taginfNfe, 'infAdic', skip_columns=skip_columns)
+        df_to_xml (df_compras_chave, taginfNfe, 'compra', skip_columns=skip_columns)
+        df_to_xml (df_respTec_chave, taginfNfe, 'infRespTec', skip_columns=skip_columns)
+    
 #Nova tag SignedInfo
 # Buscar uma tag ja existente
         tagSignature = root.find('.//Signature')
@@ -283,6 +297,8 @@ for excel_file in excel_files:
         for taginfNfe in root.findall('.//det'):
             findtagBenef = taginfNfe.find('.//prod')
             tagBenef = ET.SubElement(findtagBenef, 'cBenef')
+
+
         # movendo TAG FAT
         fatFind = ['FAT_nFat', 'FAT_vDesc', 'FAT_vOrig', 'FAT_vLiq']
         for fat in root.findall('.//dup'):
@@ -304,8 +320,9 @@ for excel_file in excel_files:
     for detelement in root.findall('.//det'):
         icmselement = detelement.find('.//ICMS')
         tipo_icms_element = icmselement.find('.//Tipo_ICMS')
-        icmselement.remove(tipo_icms_element)        
-     
+        icmselement.remove(tipo_icms_element)       
+
+
 #========================================== TIRANDO NOME DAS TAG tipo_de_icms ===============================================================================
     def remove_words_from_tag_names(element):
         if '_' in element.tag:
@@ -315,6 +332,10 @@ for excel_file in excel_files:
             remove_words_from_tag_names(child)
     # Remover as palavras dos nomes das tags de todo o XML
     remove_words_from_tag_names(root)
+#=========================================================================================================================
+
+
+
 #=========================================================================================================================
     # Converter o elemento root para string XML
     xml_data = ET.tostring(root, encoding='unicode')

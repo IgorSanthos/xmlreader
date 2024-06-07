@@ -519,9 +519,7 @@ class ReadXML:
         vBCRetPrev = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:total/ns:RETTRIB/ns:vBCRetPrev", nsNfe))
         vRetPrev = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:total/ns:RETTRIB/ns:vRetPrev", nsNfe))
 
-
-
-#============================================================================================ TRANSPORTE ha intes tambem ====================================================================================================================================
+#============================================================================================ TRANSPORTE ha intes tambem 
         modFrete = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:modFrete", nsNfe))
         transpcNPJ = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:transporta/ns:CNPJ", nsNfe))
         transpcPF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:transporta/ns:CPF", nsNfe))
@@ -544,15 +542,32 @@ class ReadXML:
         rNTC = " "
         vagao = " "
         balsa = " "
-        qVol = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:vol/ns:qVol", nsNfe))
-        esp = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:vol/ns:esp", nsNfe))
-        marca = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:vol/ns:marca", nsNfe))
-        nVol = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:vol/ns:nVol", nsNfe))
-        pesoL = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:vol/ns:pesoL", nsNfe))
-        pesoB = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:vol/ns:pesoB", nsNfe))
-        nLacre = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:transp/ns:vol/ns:nLacre", nsNfe))
+        #for
+        first_vol = True
+        for vol in root.findall("./ns:NFe/ns:infNFe/ns:transp/ns:vol", nsNfe):
+                qVol = self.check_none(vol.find("./ns:qVol", nsNfe))
+                esp = self.check_none(vol.find("./ns:esp", nsNfe))
+                marca = self.check_none(vol.find("./ns:marca", nsNfe))
+                nVol = self.check_none(vol.find("./ns:nVol", nsNfe))
+                pesoL = self.check_none(vol.find("./ns:pesoL", nsNfe))
+                pesoB = self.check_none(vol.find("./ns:pesoB", nsNfe))
+                nLacre = self.check_none(vol.find("./ns:nLacre", nsNfe))
 
-
+                if first_vol:
+                        volDados = {"Arquivo": chave,"idnNF": idnNF,"modFrete": modFrete, "CNPJ": transpcNPJ, "CPF": transpcPF, "xNome": xNome, "IE": transpIE,  
+                                "xEnder": xEnder, "xMun": xMun, "UF": transpUF, "vServ": vServ, "vBCRet": vBCRet, "pICMSRet": pICMSRet, 
+                                "vICMSRet": vICMSRet, "CFOP": cFOP, "cMunFG": cMunFG, "placa": placa, "Serv_uF": Serv_uF, "RNTC": rNTC,  
+                                "placa": placa, "destino_uF": destino_uF, "RNTC": rNTC,"vagao": vagao, "balsa": balsa, "qVol": qVol, "esp": esp,  
+                                "marca": marca, "nVol": nVol, "pesoL": pesoL,"pesoB": pesoB, "nLacre": nLacre}
+                        first_vol = False
+                else:
+                        volDados = {"Arquivo": chave,"idnNF": idnNF,"modFrete":"", "CNPJ":"", "CPF":"", "xNome":"", "IE":"",  
+                                "xEnder":"", "xMun":"", "UF":"", "vServ":"", "vBCRet":"", "pICMSRet":"",
+                                "vICMSRet":"", "CFOP":"", "cMunFG":"", "placa":"", "Serv_uF":"", "RNTC":"",
+                                "placa":"", "destino_uF":"", "RNTC":"","vagao":"", "balsa":"", "qVol": qVol, "esp": esp,  
+                                "marca": marca, "nVol": nVol, "pesoL": pesoL,"pesoB": pesoB, "nLacre": nLacre}
+                        
+                dados["Transportadora"].append(volDados)
 #============================================================================================ Cobrança ===================================================================  
         # Extraindo informações da seção 'pag-detPag'
         fAT_nFat = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:cobr/ns:fat/ns:nFat",nsNfe))
@@ -660,13 +675,6 @@ class ReadXML:
                                 "vDescCond": vDescCond, "vISSRet": vISSRet, "cRegTrib": cRegTrib, "vRetPIS": vRetPIS, "vRetCOFINS": vRetCOFINS,
                                 "vRetCSLL": vRetCSLL, "vBCIRRF": vBCIRRF, "vIRRF": vIRRF, "vBCRetPrev": vBCRetPrev, "vRetPrev": vRetPrev
                                 })
-        
-        dados["Transportadora"].append({"Arquivo": chave,"idnNF": idnNF,"modFrete": modFrete, "CNPJ": transpcNPJ, "CPF": transpcPF, "xNome": xNome, "IE": transpIE,  
-                                        "xEnder": xEnder, "xMun": xMun, "UF": transpUF, "vServ": vServ, "vBCRet": vBCRet, "pICMSRet": pICMSRet, 
-                                        "vICMSRet": vICMSRet, "CFOP": cFOP, "cMunFG": cMunFG, "placa": placa, "Serv_uF": Serv_uF, "RNTC": rNTC,  
-                                        "placa": placa, "destino_uF": destino_uF, "RNTC": rNTC,"vagao": vagao, "balsa": balsa, "qVol": qVol, "esp": esp,  
-                                        "marca": marca, "nVol": nVol, "pesoL": pesoL,"pesoB": pesoB, "nLacre": nLacre
-                                        })
 
         dados["Pagamento"].append({ "Arquivo": chave,"idnNF": idnNF, "indPag": pag_indPag, "tPag": pag_tPag, "xPag": pag_xPag,
                                     "vPag": pag_vPag, "CARD_tpIntegra": cARD_tpIntegra, "CARD_CNPJ": cARD_CNPJ, "CARD_tBand": cARD_tBand,
