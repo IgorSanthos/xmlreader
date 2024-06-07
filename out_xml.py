@@ -73,7 +73,6 @@ for excel_file in excel_files:
     df_assinatura = pd.read_excel(excel_file, sheet_name="Assinatura", dtype=str)
     df_protocolo = pd.read_excel(excel_file, sheet_name="Protocolo", dtype=str)
 
-
 #============================ SUB TAGS
 # Aba Sub dos "Emitente"
     sub_emit = {"xLgr": "enderEmit", "nro": "enderEmit", "xCpl": "enderEmit", "xBairro": "enderEmit",
@@ -307,7 +306,7 @@ for excel_file in excel_files:
         tipo_icms_element = icmselement.find('.//Tipo_ICMS')
         icmselement.remove(tipo_icms_element)        
      
-#========================================== TIRANDO NOME DAS TAG tipo de icms ===============================================================================
+#========================================== TIRANDO NOME DAS TAG tipo_de_icms ===============================================================================
     def remove_words_from_tag_names(element):
         if '_' in element.tag:
             element.tag = element.tag.split('_', 1)[1]
