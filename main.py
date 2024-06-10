@@ -1,6 +1,7 @@
 import os
 import xml.etree.ElementTree as Et
 import pandas as pd
+from funcoes.selecionar import select_folder,select_save_location
 
 class ReadXML:
     def __init__(self, directory) -> None:
@@ -35,9 +36,6 @@ class ReadXML:
             "Assinatura":[],
             "Protocolo":[]
         }
-
-
-
 
         #======================================================================== Identificação NFE ============================================================
         versao_XML = root.find('ns:NFe/ns:infNFe', nsNfe).get('versao')
@@ -131,7 +129,6 @@ class ReadXML:
         iSUF            = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:dest/ns:ISUF", nsNfe))
         iM              = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:dest/ns:IM", nsNfe))
         email           = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:dest/ns:email", nsNfe))
-
 
         #================================================================================================== Itens ========================================================
         for item in root.findall('./ns:NFe/ns:infNFe/ns:det', nsNfe):   
@@ -408,7 +405,6 @@ class ReadXML:
                 oBSITEM_obsCont_xCampo = " "
                 oBSITEM_obsFisco_xTexto = " "
                 oBSITEM_obsFisco_xCampo = " "
-
 
                 itens_data = {"Arquivo": chave, "idnNF": idnNF, "NumItem": nItem, "cProd": cProd, "cEAN": cEAN, "cBarra": cBarra, "xProd": xProd, "NCM": nCM, "NVE": nVE, 
                         "CEST": cEST, "indEscala": indEscala, "CNPJFab": cNPJFab, "cBenef": cBenef, "EXTIPI": eXTIPI, "CFOP": cFOP, "uCom": uCom, "qCom": qCom, 
@@ -706,7 +702,8 @@ class ReadXML:
 #===============================================================================
 try:
     if __name__ == "__main__":
-        xml = ReadXML(r'C:\Users\Igor\Desktop\XML EM UM DICIONARIO\xmlreader\nfe-teste')
+        path_xml = select_folder("Selecione a pasta dos arquivos xml")
+        xml = ReadXML(path_xml)
         all_xml_files = xml.all_files()
 
         all_data = {}
@@ -718,13 +715,12 @@ try:
                 else:
                     all_data[key] = value
 
-
-        with pd.ExcelWriter(r'C:\Users\Igor\Desktop\XML EM UM DICIONARIO\xmlreader\DataFrame_xml\relatorio_notas_fiscais.xlsx') as writer:
-            for sheet_name, data in all_data.items():
-                df = pd.DataFrame(data)
-                df.to_excel(writer, sheet_name=sheet_name, index=False)
-        print('enviado')
-
+        path = select_save_location("Selecione onde deseja salvar")
+        with pd.ExcelWriter(path) as writer:
+                for sheet_name, data in all_data.items():
+                        df = pd.DataFrame(data)
+                        df.to_excel(writer, sheet_name=sheet_name, index=False)
+                print('Arquivo salvo com sucesso!')
 except Exception as e:
     print(f"Ocorreu um erro: {e}")
     
