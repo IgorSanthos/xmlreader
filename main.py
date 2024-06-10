@@ -17,6 +17,9 @@ class ReadXML:
         root = tree.getroot()
         nsNfe = {"ns": "http://www.portalfiscal.inf.br/nfe"}
         nsSig = {"ns": "http://www.w3.org/2000/09/xmldsig#"}
+                # Lista para armazenar os dados das notas fiscais
+        chave = self.check_none(root.find("./ns:protNFe/ns:infProt/ns:chNFe", nsNfe))
+        idnNF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:ide/ns:nNF", nsNfe))
         dados = {
             "Identificação NFE": [],
             "Emitente": [],
@@ -24,7 +27,7 @@ class ReadXML:
             "Itens":[],
             "Total":[],
             "Transportadora":[],
-            "Cobrança":[],
+            "Cobrança":[{"Arquivo":chave,"idnNF":idnNF}],
             "Pagamento":[],
             "Inf. Adicional":[],
             "Compras":[],
@@ -33,9 +36,7 @@ class ReadXML:
             "Protocolo":[]
         }
 
-        # Lista para armazenar os dados das notas fiscais
-        chave = self.check_none(root.find("./ns:protNFe/ns:infProt/ns:chNFe", nsNfe))
-        idnNF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:ide/ns:nNF", nsNfe))
+
 
 
         #======================================================================== Identificação NFE ============================================================
@@ -582,11 +583,11 @@ class ReadXML:
                 dUP_vDup = self.check_none(dup.find("./ns:vDup", nsNfe))
                 
                 if first_dup:
-                        dupDados = {"Arquivo": chave, "idnNF": idnNF,"FAT_nFat":fAT_nFat, "FAT_vOrig":fAT_vOrig, "FAT_vDesc":fAT_vDesc,
+                        dupDados = {"Arquivo": chave,"idnNF": idnNF,"FAT_nFat":fAT_nFat, "FAT_vOrig":fAT_vOrig, "FAT_vDesc":fAT_vDesc,
                                     "FAT_vLiq":fAT_vLiq, "DUP_nDup":dUP_nDup, "DUP_dVenc":dUP_dVenc, "DUP_vDup":dUP_vDup}
                         first_dup = False
                 else:
-                        dupDados = {"Arquivo": chave, "idnNF": idnNF,"FAT_nFat":"", "FAT_vOrig":"", "FAT_vDesc":"",
+                        dupDados = {"Arquivo": chave,"idnNF": idnNF,"FAT_nFat":"", "FAT_vOrig":"", "FAT_vDesc":"",
                                     "FAT_vLiq":"", "DUP_nDup":dUP_nDup, "DUP_dVenc":dUP_dVenc, "DUP_vDup":dUP_vDup}
                 dados["Cobrança"].append(dupDados)
         
