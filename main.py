@@ -22,13 +22,19 @@ class ReadXML:
         dados = self.initialize_data_structure()
         dados['Identificação NFE'].append(self.extract_identificacao_nfe(root, nsNfe))
         dados['Emitente'].append(self.extract_emitente_data(root, nsNfe))
+        dados['Avulsa'].append(self.extract_avulsa_data(root, nsNfe))
         dados['Destinatário'].append(self.extract_destinatario_data(root, nsNfe))
+        dados['Retirada'].append(self.extract_retirada_data(root, nsNfe))
+        dados['Entrega'].append(self.extract_entrega_data(root, nsNfe))
+        dados['Autorizadas'].append(self.extract_autorizadas_data(root, nsNfe))
         dados['Itens'] = self.extract_itens_data(root, nsNfe)
         dados['Total'].append(self.extract_total_data(root, nsNfe))
         dados['Transportadora'] = self.extract_transportadora_data(root, nsNfe)
         dados['Cobrança'] = self.extract_cobranca_data(root, nsNfe)
         dados['Pagamento'].append(self.extract_pagamento_data(root, nsNfe))
+        dados['Intermediador'].append(self.extract_intermediador_data(root, nsNfe))
         dados['Inf. Adicional'].append(self.extract_inf_adicional_data(root, nsNfe))
+        dados['Exportação'].append(self.extract_exportacao_data(root, nsNfe))
         dados['Compras'].append(self.extract_compras_data(root, nsNfe))
         dados['Resp. Tecnico'].append(self.extract_resp_tecnico_data(root, nsNfe))
         dados['Assinatura'].append(self.extract_assinatura_data(root, nsNfe, nsSig))
@@ -38,19 +44,10 @@ class ReadXML:
 # Inicialização de Estrutura de Dados (cria as Abas da planilha)
     def initialize_data_structure (self):
         return{
-            "Identificação NFE": [],
-            "Emitente": [],
-            "Destinatário":[],
-            "Itens":[],
-            "Total":[],
-            "Transportadora":[],
-            "Cobrança":[],
-            "Pagamento":[],
-            "Inf. Adicional":[],
-            "Compras":[],
-            "Resp. Tecnico":[],
-            "Assinatura":[],
-            "Protocolo":[]            
+               "Identificação NFE": [], "Emitente": [], "Avulsa":[], "Destinatário":[], "Retirada":[],"Entrega":[],"Autorizadas":[], "Itens":[],
+               "Total":[], "Transportadora":[], "Cobrança":[],"Pagamento":[], "Intermediador":[], "Inf. Adicional":[],"Exportação":[],
+               "Compras":[], "Resp. Tecnico":[], "Assinatura":[], "Protocolo":[],"Retirada":[],"Entrega":[],"Autorizadas":[],"Intermediador":[],
+               "Exportação":[]            
         }
 # Extração de DADOS
     def extract_identificacao_nfe(self, root, nsNfe):
@@ -117,7 +114,7 @@ class ReadXML:
         chave =           self.check_none(root.find("./ns:protNFe/ns:infProt/ns:chNFe", nsNfe))
         idnNF =           self.check_none(root.find("./ns:NFe/ns:infNFe/ns:ide/ns:nNF", nsNfe))
         emit_CNPJ =       self.check_none(root.find("./ns:NFe/ns:infNFe/ns:emit/ns:CNPJ", nsNfe))
-        emit_CPF =        ''
+        emit_CPF =        ''# CPF nao emite nota
         emit_xNome =      self.check_none(root.find("./ns:NFe/ns:infNFe/ns:emit/ns:xNome", nsNfe))
         emit_xFant =      self.check_none(root.find("./ns:NFe/ns:infNFe/ns:emit/ns:xFant", nsNfe))
         emit_xLgr =       self.check_none(root.find("./ns:NFe/ns:infNFe/ns:emit/ns:enderEmit/ns:xLgr", nsNfe))
@@ -142,6 +139,24 @@ class ReadXML:
                 "xMun": xMunEmit, "UF": UFEmit, "CEP": CEPEmit, "cPais": enderEMIT_cPais, "xPais": enderEMIT_xPais,
                 "fone": foneEmit, "IE": IEemit, "IEST": iEST, "IM": IMEmit, "CNAE": CNAEEmit, "CRT": CRTEmit
     }
+# Avulsa (Extraindo informacoes de Destinatario)
+    def extract_avulsa_data (self, root, nsNfe):
+        chave = self.check_none(root.find("./ns:protNFe/ns:infProt/ns:chNFe", nsNfe))
+        idnNF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:ide/ns:nNF", nsNfe))
+        av_CNPJ = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:CNPJ", nsNfe))
+        av_xOrgao = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:xOrgao", nsNfe))
+        av_matr = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:matr", nsNfe))
+        av_xAgente = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:xAgente", nsNfe))
+        av_fone = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:fone", nsNfe))
+        av_UF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:UF", nsNfe))
+        av_nDAR = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:nDAR", nsNfe))
+        av_dEmi = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:dEmi", nsNfe))
+        av_vDAR = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:vDAR", nsNfe))
+        av_repEmi = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:repEmi", nsNfe))
+        av_dPag = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:dPag", nsNfe))
+        return{
+             "chave":chave,"nNF":idnNF,"CNPJ":av_CNPJ,"xOrgao":av_xOrgao,"matr":av_matr,"xAgente":av_xAgente,
+             "fone":av_fone,"UF":av_UF,"nDAR":av_nDAR,"dEmi":av_dEmi,"vDAR":av_vDAR,"repEmi":av_repEmi,"dPag":av_dPag}
 # Destinatário (Extraindo informações de Destinatario)
     def extract_destinatario_data (self, root, nsNfe):
         chave =           self.check_none(root.find("./ns:protNFe/ns:infProt/ns:chNFe", nsNfe))
@@ -166,11 +181,73 @@ class ReadXML:
         iSUF            = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:dest/ns:ISUF", nsNfe))
         iM              = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:dest/ns:IM", nsNfe))
         email           = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:dest/ns:email", nsNfe))
-        return {"Arquivo": chave,"idnNF": idnNF,"CNPJ": dest_CNPJ, "CPF": dest_CPF, "idEstrangeiro": idEstrangeiro,                                        
+        return {
+                "Arquivo": chave,"idnNF": idnNF,"CNPJ": dest_CNPJ, "CPF": dest_CPF, "idEstrangeiro": idEstrangeiro,                                        
                 "xNome": dest_xNome, "xLgr": dest_xLgr, "nro": dest_nro, "xCpl": destComplemento,
                 "xBairro": dest_xBairro, "cMun": cMunDest, "xMun": xMunDest, "UF": uFDest, "CEP": cEPDest,
                 "cPais": cPaisDest, "xPais": xPaisDest, "fone": enderDEST_fone, "indIEDest": indIEDest, "IE": iEdest,
                 "ISUF": iSUF, "IM": iM, "email": email
+        }
+    # Retirada (Extracao de retiradas) 
+    def extract_retirada_data (self, root, nsNfe):
+        chave = self.check_none(root.find("./ns:protNFe/ns:infProt/ns:chNFe", nsNfe))
+        idnNF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:ide/ns:nNF", nsNfe))
+        retirada_CNPJ = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:CNPJ", nsNfe))
+        retirada_CPF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:CPF", nsNfe))
+        retirada_xNome = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:xNome", nsNfe))
+        retirada_xLgr = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:xLgr", nsNfe))
+        retirada_nro = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:nro", nsNfe))
+        retirada_xCpl = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:xCpl", nsNfe))
+        retirada_xBairro = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:xBairro", nsNfe))
+        retirada_cMun = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:cMun", nsNfe))
+        retirada_xMun = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:xMun", nsNfe))
+        retirada_UF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:UF", nsNfe))
+        retirada_CEP = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:CEP", nsNfe))
+        retirada_cPais = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:cPais", nsNfe))
+        retirada_xPais = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:xPais", nsNfe))
+        retirada_fone = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:fone", nsNfe))
+        retirada_email = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:retirada/ns:email", nsNfe))
+        return {
+                "Arquivo": chave,"idnNF": idnNF,"CNPJ": retirada_CNPJ,"CPF": retirada_CPF,
+                "Nome": retirada_xNome,"xLgr": retirada_xLgr,"nro": retirada_nro,
+                "xCpl": retirada_xCpl,"xBairro": retirada_xBairro,"cMun": retirada_cMun,
+                "xMun": retirada_xMun,"UF": retirada_UF,"CEP": retirada_CEP,"cPais": retirada_cPais,
+                "xPais": retirada_xPais,"fone": retirada_fone,"email": retirada_email
+        }
+
+    # Retirada (Extracao de retiradas) 
+    def extract_entrega_data (self, root, nsNfe):
+        chave = self.check_none(root.find("./ns:protNFe/ns:infProt/ns:chNFe", nsNfe))
+        idnNF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:ide/ns:nNF", nsNfe))
+        entrega_CNPJ = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:CNPJ", nsNfe))
+        entrega_CPF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:CPF", nsNfe))
+        entrega_xNome = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:xNome", nsNfe))
+        entrega_xLgr = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:xLgr", nsNfe))
+        entrega_nro = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:nro", nsNfe))
+        entrega_xBairro = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:xBairro", nsNfe))
+        entrega_cMun = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:cMun", nsNfe))
+        entrega_xMun = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:xMun", nsNfe))
+        entrega_UF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:UF", nsNfe))
+        entrega_CEP = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:CEP", nsNfe))
+        entrega_cPais = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:cPais", nsNfe))
+        entrega_xPais = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:xPais", nsNfe))
+        entrega_fone = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:fone", nsNfe))
+        entrega_email = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:email", nsNfe))
+        return {
+                "Arquivo": chave,"idnNF": idnNF,"CNPJ": entrega_CNPJ,"CPF": entrega_CPF,
+                "xNome": entrega_xNome,"xLgr": entrega_xLgr,"nro": entrega_nro,"xBairro": entrega_xBairro,
+                "cMun": entrega_cMun,"xMun": entrega_xMun,"UF": entrega_UF,"CEP": entrega_CEP,
+                "cPais": entrega_cPais,"xPais": entrega_xPais,"fone": entrega_fone,"email": entrega_email
+        }
+
+    # Autorizacao (Extracao de Autorizacao) 
+    def extract_autorizadas_data (self, root, nsNfe):
+        chave = self.check_none(root.find("./ns:protNFe/ns:infProt/ns:chNFe", nsNfe))
+        idnNF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:ide/ns:nNF", nsNfe))
+        aut_CNPJ = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:autXML/ns:CNPJ", nsNfe))
+        aut_CPF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:autXML/ns:CPF", nsNfe))
+        return {
+                "Arquivo": chave,"idnNF": idnNF,"CNPJ":aut_CNPJ,"CPF":aut_CPF
         }
 # Itens (Extraindo informações de'Itens') 
     def extract_itens_data (self, root, nsNfe):
@@ -452,8 +529,8 @@ class ReadXML:
             oBSITEM_obsCont_xCampo = " "
             oBSITEM_obsFisco_xTexto = " "
             oBSITEM_obsFisco_xCampo = " "
-
-            item_data = {"Arquivo": chave, "idnNF": idnNF, "NumItem": nItem, "cProd": cProd, "cEAN": cEAN, "cBarra": cBarra, "xProd": xProd, "NCM": nCM, "NVE": nVE, 
+            item_data = {
+                    "Arquivo": chave, "idnNF": idnNF, "NumItem": nItem, "cProd": cProd, "cEAN": cEAN, "cBarra": cBarra, "xProd": xProd, "NCM": nCM, "NVE": nVE, 
                     "CEST": cEST, "indEscala": indEscala, "CNPJFab": cNPJFab, "cBenef": cBenef, "EXTIPI": eXTIPI, "CFOP": cFOP, "uCom": uCom, "qCom": qCom, 
                     "vUnCom": vUnCom, "vProd": vProd, "cEANTrib": cEANTrib, "cBarraTrib": cBarraTrib, "uTrib": uTrib, "qTrib": qTrib, "vUnTrib": vUnTrib, 
                     "vFrete": vFrete, "vSeg": vSeg, "vDesc": vDesc, "vOutro": vOutro, "indTot": indTot, "DI_nDI": dI_nDI, "DI_dDI": dI_dDI, "DI_xLocDesemb": dI_xLocDesemb, 
@@ -508,7 +585,6 @@ class ReadXML:
                     "ICMSUFDEST_vICMSUFDest": iCMSUFDEST_vICMSUFDest, "ICMSUFDEST_vICMSUFRemet": iCMSUFDEST_vICMSUFRemet, "IMPOSTODEVOL_pDevol": iMPOSTODEVOL_pDevol, 
                     "IMPOSTODEVOL_vIPIDevol": iMPOSTODEVOL_vIPIDevol, "infAdProd": infAdProd, "OBSITEM_obsCont_xTexto": oBSITEM_obsCont_xTexto, 
                     "OBSITEM_obsCont_xCampo": oBSITEM_obsCont_xCampo, "OBSITEM_obsFisco_xTexto": oBSITEM_obsFisco_xTexto, "OBSITEM_obsFisco_xCampo": oBSITEM_obsFisco_xCampo
-
                     }
             itens_data.append(item_data)
         return itens_data
@@ -666,7 +742,7 @@ class ReadXML:
                 dados["Cobrança"].append(dupDados)
         return dados["Cobrança"]
         
-# PAGAMENTO (Extraindo informações da seção 'pag-detPag')
+# Pagamento (Extraindo informações da seção 'pag-detPag')
     def extract_pagamento_data (self, root, nsNfe):
         chave = self.check_none(root.find("./ns:protNFe/ns:infProt/ns:chNFe", nsNfe))
         idnNF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:ide/ns:nNF", nsNfe))
@@ -683,6 +759,15 @@ class ReadXML:
                 "Arquivo": chave,"idnNF": idnNF, "indPag": pag_indPag, "tPag": pag_tPag, "xPag": pag_xPag,
                 "vPag": pag_vPag, "CARD_tpIntegra": cARD_tpIntegra, "CARD_CNPJ": cARD_CNPJ, "CARD_tBand": cARD_tBand,
                 "CARD_cAut": cARD_cAut, "vTroco": pag_vTroco
+        }
+# Intermediador (Extracao de Intermediador)
+    def extract_intermediador_data (self, root, nsNfe):
+        chave = self.check_none(root.find("./ns:protNFe/ns:infProt/ns:chNFe", nsNfe))
+        idnNF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:ide/ns:nNF", nsNfe))
+        inter_CNPJ = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:infIntermed/ns:CNPJ",nsNfe))
+        inter_idCadIntTran = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:infIntermed/ns:idCadIntTran",nsNfe))
+        return {
+                "Arquivo": chave,"idnNF": idnNF,"CNPJ":inter_CNPJ,"idCadIntTran":inter_idCadIntTran
         }
 # Inf. Adicional (Extraindo informações da seção 'infAdic')
     def extract_inf_adicional_data (self, root, nsNfe):
@@ -701,6 +786,17 @@ class ReadXML:
                 "Arquivo":chave,"idnNF":idnNF,"infAdFisco":infAdFisco,"infCpl":infCpl,"OBSCONT_xCampo":oBSCONT_xCampo,
                 "OBSCONT_xTexto":oBSCONT_xTexto,"OBSFISCO_xCampo":oBSFISCO_xCampo,"OBSFISCO_xTexto":oBSFISCO_xTexto,
                 "PROCREF_nProc":pROCREF_nProc,"PROCREF_indProc":pROCREF_indProc,"PROCREF_tpAto":pROCREF_tpAto,
+        }
+# Exportação (Extracao de Exportação) 
+    def extract_exportacao_data (self, root, nsNfe):
+        chave = self.check_none(root.find("./ns:protNFe/ns:infProt/ns:chNFe", nsNfe))
+        idnNF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:ide/ns:nNF", nsNfe))
+        ex_UFSaidaPais_UFEmbarq = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:exporta/ns:UFSaidaPais",nsNfe))
+        ex_xLocExporta = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:exporta/ns:xLocExporta",nsNfe))
+        ex_xLocDespacho = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:exporta/ns:xLocDespacho",nsNfe))
+        return {
+                "Arquivo": chave,"idnNF": idnNF,"UFSaidaPais_UFEmbarq":ex_UFSaidaPais_UFEmbarq,
+                "xLocExporta":ex_xLocExporta,"xLocDespacho":ex_xLocDespacho
         }
 # Compras
     def extract_compras_data (self, root, nsNfe):
