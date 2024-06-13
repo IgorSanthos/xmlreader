@@ -163,8 +163,9 @@ for excel_file in excel_files:
         tagNFe = ET.SubElement(root, 'NFe')
         tagNFe.set("xmlns", "http://www.portalfiscal.inf.br/nfe")
         taginfNfe = ET.SubElement(tagNFe, 'infNFe')
-        taginfNfe.set("Id", f"NFe{chave}")
         taginfNfe.set("versao", "4.00")
+        taginfNfe.set("Id", f"NFe{chave}")
+
         
 
         # pular algumas colunas
