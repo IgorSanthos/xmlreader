@@ -115,30 +115,42 @@ tag_infProt = {"tpAmb": "infProt", "verAplic": "infProt", "chNFe": "infProt", "d
 for excel_file in excel_files:    
     df_idNFE = pd.read_excel(excel_file, sheet_name="Identificação NFE", dtype=str)
     df_emi = pd.read_excel(excel_file, sheet_name="Emitente", dtype=str)
+    df_avulsa = pd.read_excel(excel_file, sheet_name="Avulsa", dtype=str)
     df_dest = pd.read_excel(excel_file, sheet_name="Destinatário", dtype=str)
+    df_retirada = pd.read_excel(excel_file, sheet_name="Retirada",dtype=str)
+    df_entrega = pd.read_excel(excel_file, sheet_name="Entrega",dtype=str)
+    df_autorizada = pd.read_excel(excel_file, sheet_name="Autorizadas",dtype=str)                            
     df_det = pd.read_excel(excel_file, sheet_name="Itens", dtype=str)
     df_total = pd.read_excel(excel_file, sheet_name="Total", dtype=str)
     df_transp = pd.read_excel(excel_file, sheet_name="Transportadora", dtype=str)
     df_cobranca = pd.read_excel(excel_file, sheet_name="Cobrança", dtype=str)
     df_pagamento = pd.read_excel(excel_file, sheet_name="Pagamento", dtype=str)
+    df_intermed = pd.read_excel(excel_file, sheet_name="Intermediador", dtype=str)
     df_info = pd.read_excel(excel_file, sheet_name="Inf. Adicional", dtype=str)
+    df_exportacao = pd.read_excel(excel_file, sheet_name="Exportação",dtype=str)
     df_compras = pd.read_excel(excel_file, sheet_name="Compras", dtype=str)
     df_respTec = pd.read_excel(excel_file, sheet_name="Resp. Tecnico", dtype=str)
     df_assinatura = pd.read_excel(excel_file, sheet_name="Assinatura", dtype=str)
     df_protocolo = pd.read_excel(excel_file, sheet_name="Protocolo", dtype=str)
-
+    
     chaves_unicas = df_idNFE['Arquivo'].unique()
 
     for chave in chaves_unicas:
         df_idNFE_chave = df_idNFE[df_idNFE['Arquivo'] == chave]
         df_emit_chave = df_emi[df_emi['Arquivo'] == chave]
+        df_avulsa_chave = df_avulsa[df_avulsa['Arquivo'] == chave]
         df_dest_chave = df_dest[df_dest['Arquivo'] == chave]
+        df_retirada_chave = df_retirada[df_retirada['Arquivo'] == chave]
+        df_entrega_chave = df_entrega[df_entrega['Arquivo'] == chave]
+        df_autoriza_chave = df_autorizada[df_autorizada['Arquivo'] == chave]
         df_det_chave = df_det[df_det['Arquivo'] == chave]
         df_total_chave = df_total[df_total['Arquivo'] == chave]
         df_transp_chave = df_transp[df_transp['Arquivo'] == chave]
         df_cobranca_chave = df_cobranca[df_cobranca['Arquivo'] == chave]
         df_paga_chave = df_pagamento[df_pagamento['Arquivo'] == chave]
+        df_intermed_chave = df_intermed[df_intermed['Arquivo'] == chave]
         df_info_chave = df_info[df_info['Arquivo'] == chave]
+        df_exportacao_chave = df_exportacao[df_exportacao['Arquivo'] == chave]
         df_compras_chave = df_compras[df_compras['Arquivo'] == chave]
         df_respTec_chave = df_respTec[df_respTec['Arquivo'] == chave]
         df_assinatura_chave = df_assinatura[df_assinatura['Arquivo'] == chave]
@@ -160,7 +172,11 @@ for excel_file in excel_files:
         # Chamadas para df_to_xml para as outras planilhas
         df_to_xml(df_idNFE_chave, taginfNfe, 'ide', skip_columns=skip_columns)
         df_to_xml(df_emit_chave, taginfNfe, 'emit', tag_first_lvl=sub_emit, skip_columns=skip_columns)
+        df_to_xml(df_avulsa_chave,taginfNfe, 'avulsa', skip_columns=skip_columns)
         df_to_xml(df_dest_chave, taginfNfe, 'dest', tag_first_lvl=sub_dest, skip_columns=skip_columns)
+        df_to_xml(df_retirada_chave, taginfNfe, 'retirada', skip_columns=skip_columns)
+        df_to_xml(df_entrega_chave, taginfNfe, 'entrega', skip_columns=skip_columns)
+        df_to_xml(df_autoriza_chave, taginfNfe, 'autXML', skip_columns=skip_columns)
         df_to_xml(df_det_chave, taginfNfe, 'det', tag_first_lvl=tag_impostos, tag_sec_lvl=tagICMS, tag_ter_lvl=tagICMSTipo, skip_columns=skip_columns)
         df_to_xml(df_total_chave, taginfNfe, 'total', tag_first_lvl=tag_ICMSTot, skip_columns=skip_columns)
         df_to_xml(df_assinatura_chave, tagNFe, 'Signature', tag_first_lvl=tag_Keyinfo, tag_sec_lvl=tag_X509Data, skip_columns=skip_columns)
@@ -187,9 +203,12 @@ for excel_file in excel_files:
         tagfaturamento = ET.SubElement(tagCobr, 'fat')
         df_to_xml(df_cobranca_chave, tagCobr, 'dup', skip_columns=skip_columns)
         df_to_xml(df_paga_chave, taginfNfe, 'pag', tag_first_lvl=tag_detPag, skip_columns=skip_columns)
+        df_to_xml(df_intermed_chave,taginfNfe,'idCadIntTran', skip_columns=skip_columns)
         df_to_xml(df_info_chave, taginfNfe, 'infAdic', skip_columns=skip_columns)
+        df_to_xml(df_exportacao_chave,taginfNfe, 'exporta', skip_columns=skip_columns)
         df_to_xml(df_compras_chave, taginfNfe, 'compra', skip_columns=skip_columns)
         df_to_xml(df_respTec_chave, taginfNfe, 'infRespTec', skip_columns=skip_columns)
+        # Ajuster nas TAGS
         # Assinatura
         tagSignature = root.find('.//Signature')
         if tagSignature is not None:
@@ -213,10 +232,10 @@ for excel_file in excel_files:
             if  findDigest is not None:
                 tag_SigInfo.remove(findDigest)
                 tagReference.append(findDigest)
-
+            # protNFe
             findprotNFe = root.find('.//protNFe')
             if findprotNFe is not None:
-                findprotNFe.set("xmlns", 'http://www.portalfiscal.inf.br/nfe')
+                findprotNFe.set("versao", '4.00')
 
         fatFind = ['FAT_nFat', 'FAT_vDesc', 'FAT_vOrig', 'FAT_vLiq']
         for fat in root.findall('.//dup'):
@@ -256,9 +275,11 @@ for excel_file in excel_files:
                 cofinsaliq.tag = f'COFINS{tipo_pis}'
 
             pis_element = det_element.find('Tipo_PIS')
-            det_element.remove(pis_element)
-            cofins_element = det_element.find('Tipo_COFINS')            
-            det_element.remove(cofins_element)
+            if  pis_element is not None:
+                det_element.remove(pis_element)
+            cofins_element = det_element.find('Tipo_COFINS')
+            if  cofins_element is not None:            
+                det_element.remove(cofins_element)
 
         remover_(root)
 
