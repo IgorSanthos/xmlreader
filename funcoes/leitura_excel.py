@@ -3,6 +3,11 @@ import xml.etree.ElementTree as ET
 # Essa função, `df_to_xml`, converte um DataFrame do pandas em elementos XML, organizando-os hierarquicamente conforme as especificações fornecidas por tags de primeiro, segundo e terceiro níveis e evitando colunas especificadas para pular.
 def df_to_xml(df, parent_element, row_element_name, tag_first_lvl=None, tag_sec_lvl=None, tag_ter_lvl=None, skip_columns=None):
     for _, row in df.iterrows():
+        # Verifica se todas as colunas a partir da terceira estão vazias
+        all_empty = all(pd.isna(row[col_name]) or row[col_name] in ['', ' '] for col_name in df.columns[2:])
+        if all_empty:
+            continue
+        
         row_element = ET.SubElement(parent_element, row_element_name)
         for col_name in df.columns:
             if pd.isna(row[col_name]) or row[col_name] in ['', ' ']:

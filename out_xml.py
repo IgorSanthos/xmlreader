@@ -31,9 +31,9 @@ sub_dest = {"xLgr": "enderDest", "nro": "enderDest", "xCpl": "enderDest", "xBair
 
 sub_prod = {"NumItem": "prod","cProd": "prod", "cEAN": "prod", "xProd": "prod", "NCM": "prod", "CEST": "prod", 
             "CFOP": "prod", "uCom": "prod", "qCom": "prod", "vUnCom": "prod", "vProd": "prod", "cEANTrib": "prod", 
-            "uTrib": "prod", "qTrib": "prod", "vUnTrib": "prod", "indTot": "prod","xPed": "prod", "nFCI": "prod"}
+            "uTrib": "prod", "qTrib": "prod", "vUnTrib": "prod", "indTot": "prod","xPed": "prod", "nFCI": "prod","nItemPed":"prod"}
 
-tag_impostos = {**sub_prod, "Tipo_ICMS": "imposto", "orig": "imposto", "CSOSN": "imposto","ICMS_CST": "imposto",
+tag_impostos = {**sub_prod, "vTotTrib":"imposto", "Tipo_ICMS": "imposto", "orig": "imposto", "CSOSN": "imposto","ICMS_CST": "imposto",
                 "ICMS_modBC": "imposto", "ICMS_vBC": "imposto","ICMS_modBCST": "imposto","ICMS_pRedBC": "imposto",
                 "ICMS_pICMS": "imposto", "ICMS_vICMSOp": "imposto","ICMS_pDif": "imposto","ICMS_vICMSDif": "imposto",
                 "ICMS_vICMS": "imposto","ICMS_vICMSDeson": "imposto","ICMS_motDesICMS": "imposto","ICMS_pMVAST": "imposto",
@@ -163,8 +163,9 @@ for excel_file in excel_files:
         tagNFe = ET.SubElement(root, 'NFe')
         tagNFe.set("xmlns", "http://www.portalfiscal.inf.br/nfe")
         taginfNfe = ET.SubElement(tagNFe, 'infNFe')
-        taginfNfe.set("versao", "4.00")
         taginfNfe.set("Id", f"NFe{chave}")
+        taginfNfe.set("versao", "4.00")
+        
 
         # pular algumas colunas
         skip_columns = ["Arquivo", "idnNF", "NumItem","versao_XML"]
@@ -185,6 +186,8 @@ for excel_file in excel_files:
         # Transporte
         tagTrans = ET.SubElement(taginfNfe, 'transp')
         transport = ET.SubElement(tagTrans, 'transporta')
+        #try:
+        #trasportCnpj = transport.find('//CNPJ')
         df_to_xml(df_transp_chave, tagTrans, 'vol', skip_columns=skip_columns)
         elements = ['CNPJ', 'xNome', 'IE', 'xEnder', 'xMun', 'UF']
         transpfind = tagTrans.find('.//vol')
@@ -198,10 +201,25 @@ for excel_file in excel_files:
             if modfrete is not None:
                 transpfind.remove(modfrete)
                 tagTrans.insert(0, modfrete)
+        #except Exception as e:
+        #    tagTrans.remove(transport)
+
         # Cobrança
         tagCobr = ET.SubElement(taginfNfe, 'cobr')
         tagfaturamento = ET.SubElement(tagCobr, 'fat')
+        #try:
+        tagfatura = tagCobr.find ('.//nFat')
         df_to_xml(df_cobranca_chave, tagCobr, 'dup', skip_columns=skip_columns)
+        fatFind = ['FAT_nFat', 'FAT_vDesc', 'FAT_vOrig', 'FAT_vLiq']
+        for fat in root.findall('.//dup'):
+            for tag in fatFind:
+                cobranca_FAT_nFat = fat.find(tag)
+                if cobranca_FAT_nFat is not None:
+                    fat.remove(cobranca_FAT_nFat)
+                    tagfaturamento.append(cobranca_FAT_nFat)
+        #except Exception as e:
+        #    print('excluir CobranÇa')# ----------------------------------------------------
+
         df_to_xml(df_paga_chave, taginfNfe, 'pag', tag_first_lvl=tag_detPag, skip_columns=skip_columns)
         df_to_xml(df_intermed_chave,taginfNfe,'idCadIntTran', skip_columns=skip_columns)
         df_to_xml(df_info_chave, taginfNfe, 'infAdic', skip_columns=skip_columns)
@@ -235,15 +253,10 @@ for excel_file in excel_files:
             # protNFe
             findprotNFe = root.find('.//protNFe')
             if findprotNFe is not None:
+                findprotNFe.set("xmlns", 'http://www.portalfiscal.inf.br/nfe')
                 findprotNFe.set("versao", '4.00')
+        
 
-        fatFind = ['FAT_nFat', 'FAT_vDesc', 'FAT_vOrig', 'FAT_vLiq']
-        for fat in root.findall('.//dup'):
-            for tag in fatFind:
-                FAT_nFat = fat.find(tag)
-                if FAT_nFat is not None:
-                    fat.remove(FAT_nFat)
-                    tagfaturamento.append(FAT_nFat)
 
         for i, finditem in enumerate(root.findall('.//det'), start=1):
             finditem.set("nItem", str(i))
