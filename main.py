@@ -46,8 +46,7 @@ class ReadXML:
         return{
                "Identificação NFE": [], "Emitente": [], "Avulsa":[], "Destinatário":[], "Retirada":[],"Entrega":[],"Autorizadas":[], "Itens":[],
                "Total":[], "Transportadora":[], "Cobrança":[],"Pagamento":[], "Intermediador":[], "Inf. Adicional":[],"Exportação":[],
-               "Compras":[], "Resp. Tecnico":[], "Assinatura":[], "Protocolo":[],"Retirada":[],"Entrega":[],"Autorizadas":[],"Intermediador":[],
-               "Exportação":[]            
+               "Compras":[], "Resp. Tecnico":[], "Assinatura":[], "Protocolo":[]           
         }
 # Extração de DADOS
     def extract_identificacao_nfe(self, root, nsNfe):
@@ -155,7 +154,7 @@ class ReadXML:
         av_repEmi = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:repEmi", nsNfe))
         av_dPag = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:avulsa/ns:dPag", nsNfe))
         return{
-             "chave":chave,"nNF":idnNF,"CNPJ":av_CNPJ,"xOrgao":av_xOrgao,"matr":av_matr,"xAgente":av_xAgente,
+             "Arquivo":chave,"nNF":idnNF,"CNPJ":av_CNPJ,"xOrgao":av_xOrgao,"matr":av_matr,"xAgente":av_xAgente,
              "fone":av_fone,"UF":av_UF,"nDAR":av_nDAR,"dEmi":av_dEmi,"vDAR":av_vDAR,"repEmi":av_repEmi,"dPag":av_dPag}
 # Destinatário (Extraindo informações de Destinatario)
     def extract_destinatario_data (self, root, nsNfe):
@@ -224,6 +223,7 @@ class ReadXML:
         entrega_xNome = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:xNome", nsNfe))
         entrega_xLgr = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:xLgr", nsNfe))
         entrega_nro = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:nro", nsNfe))
+        entrega_xCpl = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:xCpl", nsNfe))
         entrega_xBairro = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:xBairro", nsNfe))
         entrega_cMun = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:cMun", nsNfe))
         entrega_xMun = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:xMun", nsNfe))
@@ -235,7 +235,7 @@ class ReadXML:
         entrega_email = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:entrega/ns:email", nsNfe))
         return {
                 "Arquivo": chave,"idnNF": idnNF,"CNPJ": entrega_CNPJ,"CPF": entrega_CPF,
-                "xNome": entrega_xNome,"xLgr": entrega_xLgr,"nro": entrega_nro,"xBairro": entrega_xBairro,
+                "xNome": entrega_xNome,"xLgr": entrega_xLgr,"nro": entrega_nro,"xCpl":entrega_xCpl,"xBairro": entrega_xBairro,
                 "cMun": entrega_cMun,"xMun": entrega_xMun,"UF": entrega_UF,"CEP": entrega_CEP,
                 "cPais": entrega_cPais,"xPais": entrega_xPais,"fone": entrega_fone,"email": entrega_email
         }
@@ -719,13 +719,13 @@ class ReadXML:
     
 # Cobrança (Extraindo informações da seção 'pag-detPag')
     def extract_cobranca_data (self, root, nsNfe):
-        dados = {"Cobrança":[]}
         chave = self.check_none(root.find("./ns:protNFe/ns:infProt/ns:chNFe", nsNfe))
         idnNF = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:ide/ns:nNF", nsNfe))
         fAT_nFat = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:cobr/ns:fat/ns:nFat",nsNfe))
         fAT_vOrig = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:cobr/ns:fat/ns:vOrig",nsNfe))
         fAT_vDesc = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:cobr/ns:fat/ns:vDesc",nsNfe))
         fAT_vLiq = self.check_none(root.find("./ns:NFe/ns:infNFe/ns:cobr/ns:fat/ns:vLiq",nsNfe))
+        dados = {"Cobrança":[{"Arquivo": chave,"idnNF": idnNF}]}
         # Itens dentro de Cobranca
         first_dup = True
         for dup in root.findall("./ns:NFe/ns:infNFe/ns:cobr/ns:dup", nsNfe):
