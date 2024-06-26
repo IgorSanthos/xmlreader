@@ -1,0 +1,122 @@
+*   {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root   {
+    font-size: 62.5%;
+    font-family: "Roboto", sans-serif;
+}
+
+
+header{
+    background-color: #f2e8de1a;
+}
+/* menu */
+nav {
+    height: 5rem;
+    padding: 2rem;
+}
+nav ul li a {
+
+    text-decoration: none;
+    text-align: center;
+    align-items: center;
+    padding: 1rem;
+    margin: 0 1rem;
+    font-size: 1.8rem;
+    color: #EE3D25;
+    font-weight: 500;
+}
+
+nav a:hover{
+    color: #6CBE45;
+    transition: color 0.5s ease;
+}
+
+.menu, li{
+    display: inline;
+    font-size: 1.6rem;
+}
+nav ul li {
+    margin: 0 1rem;
+    
+}
+
+/* corpo fora o menu */
+.content {
+    font-size: 1.6rem;
+    display: grid;
+    grid-template-areas:
+        ". . . . ."
+        ". hero . form ."
+        ". . . . .";
+        gap: 4rem;
+        padding: 4rem;
+}
+
+/* Lado Esquerdo */
+aside {
+    width: 100%;
+    max-width: 80rem;
+    height: auto;
+    margin: 0;
+    grid-area: hero;
+    text-align: center;
+}
+aside.pg2{
+    background-color: white;
+}
+
+img {
+    width: 70rem;
+    height: auto;
+}
+
+
+/* Lado Direito */
+main {
+    grid-area: form;
+    text-align: center;
+    padding-bottom: 15rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 60rem;
+    max-width: 60rem;
+    margin: 0 auto;
+
+}
+main div{
+    /* background-color: #6CBE45; */
+    align-items: center;
+    display: flex;
+    font-weight: 100;
+    font-size: 2rem;
+    flex-direction: column;
+}
+main div h2{
+    font-weight: 500;
+
+}
+main div h3 {
+    padding-bottom: 4rem;
+    font-weight: 200;
+    font-size: 1.6rem;
+}
+.movebtt{
+    cursor: pointer;
+    transition: background-color 0.5s ease;
+    font-size: 2.5rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    width: 31rem;
+    background-color: #ECA521;
+    margin-bottom: 2rem;
+    color: #F2E8DE;
+    
+}
+.movebtt:hover {
+    background-color:#EE3D25;
+}
